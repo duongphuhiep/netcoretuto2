@@ -9,15 +9,18 @@ namespace poc.client
     public interface IWalletRepository
     {
         public int Id { get; }
+
         void WriteToDB();
     }
+
     public interface IWalletService
     {
         public int Id { get; }
+
         void LockAmount();
     }
 
-    public class WalletRepository: IWalletRepository
+    public class WalletRepository : IWalletRepository
     {
         private static int IdCounter;
         private readonly string connectionString;
@@ -35,7 +38,8 @@ namespace poc.client
             Console.WriteLine($"WalletRepository #{Id} call {connectionString}");
         }
     }
-    public class WalletService: IWalletService
+
+    public class WalletService : IWalletService
     {
         private static int IdCounter;
         private readonly IWalletRepository walletRepository;
@@ -45,7 +49,9 @@ namespace poc.client
             this.walletRepository = walletRepository;
             Id = IdCounter++;
         }
+
         public int Id { get; }
+
         public void LockAmount()
         {
             Console.WriteLine($"WalletService #{Id} LockAmount");
@@ -55,21 +61,39 @@ namespace poc.client
 
     public static class DepsInjDemo
     {
+        static string connectionString = "mydb";
         public static void MsSample()
         {
             try
             {
                 IServiceProviderFactory<IServiceCollection> serviceProviderFactory = new DefaultServiceProviderFactory();
                 IServiceCollection serviceCollection = new ServiceCollection();
-                IServiceProvider serviceProvider = serviceProviderFactory.CreateServiceProvider(serviceCollection);
 
-                serviceCollection.AddScoped(typeof(IWalletRepository), typeof(WalletRepository));
+                serviceCollection.AddScoped(typeof(IWalletRepository), s => new WalletRepository(connectionString));
                 serviceCollection.AddScoped(typeof(IWalletService), typeof(WalletService));
 
-                using (var controller01Scope = serviceProvider.CreateScope())
+                IServiceProvider serviceProvider = serviceProviderFactory.CreateServiceProvider(serviceCollection);
+
+                serviceProvider.GetService<IWalletService>().LockAmount(); // the connectionString is by default: "mydb"
+
+                Console.WriteLine("-------------");
+
+                using (var scope = serviceProvider.CreateScope())
                 {
-                    IWalletService walletService = controller01Scope.ServiceProvider.GetService<IWalletService>();
-                    walletService.LockAmount();
+                    connectionString = "hiep";
+                    serviceProvider.GetService<IWalletService>().LockAmount(); // the connectionString won't change here: "mydb"
+                    scope.ServiceProvider.GetService<IWalletService>().LockAmount(); // the connectionString is "hiep"
+                    scope.ServiceProvider.GetService<IWalletService>().LockAmount(); // the connectionString is "hiep"
+                }
+
+                Console.WriteLine("-------------");
+
+                using (var scope = serviceProvider.CreateScope())
+                {
+                    connectionString = "nhu";
+                    serviceProvider.GetService<IWalletService>().LockAmount(); // the connectionString won't change here: "mydb"
+                    scope.ServiceProvider.GetService<IWalletService>().LockAmount(); // the connectionString is "nhu"
+                    scope.ServiceProvider.GetService<IWalletService>().LockAmount(); // the connectionString is "nhu"
                 }
             }
             catch (Exception ex)
@@ -77,6 +101,7 @@ namespace poc.client
                 Console.WriteLine(ex);
             }
         }
+
         public static void AutofacSample()
         {
             try
@@ -89,17 +114,16 @@ namespace poc.client
                 serviceCollection.AddScoped(typeof(IWalletRepository), svp => new WalletRepository("LocalDB_connection_string"));
                 //serviceCollection.AddTransient(typeof(IWalletService), typeof(WalletService));
 
-                #endregion
+                #endregion Register all implementations / objects in the dependency graph
 
                 ContainerBuilder containerBuilder = serviceProviderFactory.CreateBuilder(serviceCollection);
                 // via assembly scan
                 containerBuilder.RegisterAssemblyTypes(typeof(WalletService).GetTypeInfo().Assembly)
                     .Except<WalletRepository>()
                     .AsImplementedInterfaces();
-                
-                // or individually
-                //containerBuilder.RegisterType<MyHandler>().AsImplementedInterfaces().InstancePerDependency();          
 
+                // or individually
+                //containerBuilder.RegisterType<MyHandler>().AsImplementedInterfaces().InstancePerDependency();
 
                 IServiceProvider serviceProvider = serviceProviderFactory.CreateServiceProvider(containerBuilder);
 
@@ -116,7 +140,6 @@ namespace poc.client
                         IWalletService walletService = scopedServiceProvider.GetService<IWalletService>();
                         walletService.LockAmount();
                     }
-
                 }
             }
             catch (Exception ex)

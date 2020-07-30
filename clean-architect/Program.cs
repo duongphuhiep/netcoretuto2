@@ -1,24 +1,21 @@
-﻿using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 
 namespace poc.client
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             try
             {
-                MediatorDemo.Play001Async().Wait();
+                //MediatorDemo.Play001Async().Wait();
+                //DepsInjSingleton.Play();
+                DepsInjDemo.MsSample();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
         }
-
-        
     }
 }
