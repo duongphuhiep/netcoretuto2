@@ -13,7 +13,17 @@ namespace demo003.graphql.GraphTypeFirst
             {
                 var json = await schema.ExecuteAsync(_ =>
                 {
-                    _.Query = "{ hero { id name } }";
+                    _.Query = @"
+                        { 
+                            two: hero(id:""2"") { 
+                                id 
+                                name 
+                            },
+                            three: hero(id:""3"") { 
+                                id 
+                                name 
+                            },
+                        }";
                 }).ConfigureAwait(false);
 
                 Console.WriteLine(json);

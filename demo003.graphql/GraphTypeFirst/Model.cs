@@ -1,3 +1,4 @@
+using GraphQL;
 using GraphQL.Types;
 
 namespace demo003.graphql.GraphTypeFirst
@@ -23,7 +24,12 @@ namespace demo003.graphql.GraphTypeFirst
         {
             Field<DroidType>(
               "hero",
-              resolve: context => new Droid { Id = "1", Name = "R2-D2" }
+              arguments: new QueryArguments(new QueryArgument<IdGraphType> { Name = "id" }),
+              resolve: context =>
+              {
+                  var id = context.GetArgument<string>("id");
+                  return new Droid { Id = id, Name = "R2-D2" };
+              }
             );
         }
     }
