@@ -17,14 +17,7 @@ builder.Services.AddLogging(loggingBuilder =>
 	});
 builder.Services.AddHttpLogging(opts =>
 {
-	opts.LoggingFields = HttpLoggingFields.RequestMethod | HttpLoggingFields.RequestPath | HttpLoggingFields.RequestProperties | HttpLoggingFields.RequestBody | HttpLoggingFields.ResponseBody;
 	opts.LoggingFields = HttpLoggingFields.All;
-
-/* 	//log thess headers
-	opts.RequestHeaders.Add(HeaderNames.ContentType);
-	opts.RequestHeaders.Add(HeaderNames.ContentEncoding);
-	opts.RequestHeaders.Add(HeaderNames.ContentLength);
- */    
 
 	//log the body as text for the following types of requests
 	opts.MediaTypeOptions.AddText("application/json", Encoding.UTF8);
@@ -33,13 +26,6 @@ builder.Services.AddHttpLogging(opts =>
 	opts.MediaTypeOptions.AddText("application/xml", Encoding.UTF8);
 	opts.MediaTypeOptions.AddText("application/x-www-form-urlencoded", Encoding.UTF8);
 	opts.MediaTypeOptions.AddText("multipart/form-data", Encoding.UTF8);
-
-    opts.MediaTypeOptions.AddText("application/json; charset=utf-8", Encoding.UTF8);
-	opts.MediaTypeOptions.AddText("text/json; charset=utf-8", Encoding.UTF8);
-	opts.MediaTypeOptions.AddText("text/plain; charset=utf-8", Encoding.UTF8);
-	opts.MediaTypeOptions.AddText("application/xml; charset=utf-8", Encoding.UTF8);
-	opts.MediaTypeOptions.AddText("application/x-www-form-urlencoded; charset=utf-8", Encoding.UTF8);
-	opts.MediaTypeOptions.AddText("multipart/form-data; charset=utf-8", Encoding.UTF8);
 
 	opts.RequestBodyLogLimit = 4096;
 	opts.ResponseBodyLogLimit = 4096;

@@ -1,0 +1,7 @@
+POST https://localhost:7210/hello?page=api&line=auto
+Content-Type: application/json
+
+{
+  "name": "Peter",
+  "age": 20
+}
