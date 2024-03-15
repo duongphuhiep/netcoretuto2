@@ -5,3 +5,13 @@ Content-Type: application/json
   "name": "Peter",
   "age": 20
 }
+
+###
+
+POST https://localhost:7210/hello-failed?page=api&line=auto
+Content-Type: application/json
+
+{
+  "name": "Peter",
+  "age": 20
+}
