@@ -1,42 +1,69 @@
 using Elastic.Extensions.Logging;
 using Microsoft.AspNetCore.HttpLogging;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using SampleApi;
 using System.Text;
 
-var configBuilder = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-var config = configBuilder.Build();
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    ApplicationName = Telemetry.ApplicationName,
+});
+var config = builder.Configuration;
 
-var builder = WebApplication.CreateBuilder(args);
+var otelBuilder = builder.Services.AddOpenTelemetry();
+otelBuilder.ConfigureResource(resource => resource.AddService(serviceName: builder.Environment.ApplicationName));
+otelBuilder.WithTracing(tracing =>
+{
+    tracing.AddAspNetCoreInstrumentation();
+    tracing.AddHttpClientInstrumentation();
+    tracing.AddSource(builder.Environment.ApplicationName);
+    var tracingOtlpEndpoint = config["JaegerGrpcUrl"];
+    if (tracingOtlpEndpoint is not null)
+    {
+        tracing.AddOtlpExporter(otlpOptions =>
+        {
+            otlpOptions.Endpoint = new Uri(tracingOtlpEndpoint);
+            otlpOptions.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
+        });
+    }
+    else
+    {
+        tracing.AddConsoleExporter();
+    }
+});
+
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-builder.Services.AddLogging(loggingBuilder =>
+builder.Services
+    .AddEndpointsApiExplorer()
+    .AddSwaggerGen()
+    .AddLogging(loggingBuilder =>
     {
         loggingBuilder.AddConsole();
-        loggingBuilder.AddSeq(config.GetSection("Logging:Seq"));
+        loggingBuilder.AddSeq(config.GetRequiredSection("Logging:Seq"));
         loggingBuilder.AddElasticsearch(elasticConf =>
         {
             elasticConf.ShipTo = config.GetRequiredSection("Logging:Elastic").Get<Elastic.Extensions.Logging.Options.ShipToOptions>()!;
         });
-    });
-builder.Services.AddHttpLogging(opts =>
-{
-    opts.CombineLogs = true;
-    opts.LoggingFields = HttpLoggingFields.All;
+    })
+    .AddHttpLogging(opts =>
+    {
+        opts.CombineLogs = true;
+        opts.LoggingFields = HttpLoggingFields.All;
 
-    //log the body as text for the following types of requests
-    opts.MediaTypeOptions.AddText("application/json", Encoding.UTF8);
-    opts.MediaTypeOptions.AddText("text/json", Encoding.UTF8);
-    opts.MediaTypeOptions.AddText("text/plain", Encoding.UTF8);
-    opts.MediaTypeOptions.AddText("application/xml", Encoding.UTF8);
-    opts.MediaTypeOptions.AddText("application/x-www-form-urlencoded", Encoding.UTF8);
-    opts.MediaTypeOptions.AddText("multipart/form-data", Encoding.UTF8);
-    opts.RequestBodyLogLimit = 4096;
-    opts.ResponseBodyLogLimit = 4096;
-});
+        //log the body as text for the following types of requests
+        opts.MediaTypeOptions.AddText("application/json", Encoding.UTF8);
+        opts.MediaTypeOptions.AddText("text/json", Encoding.UTF8);
+        opts.MediaTypeOptions.AddText("text/plain", Encoding.UTF8);
+        opts.MediaTypeOptions.AddText("application/xml", Encoding.UTF8);
+        opts.MediaTypeOptions.AddText("application/x-www-form-urlencoded", Encoding.UTF8);
+        opts.MediaTypeOptions.AddText("multipart/form-data", Encoding.UTF8);
+        opts.RequestBodyLogLimit = 4096;
+        opts.ResponseBodyLogLimit = 4096;
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
