@@ -15,10 +15,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddLogging(loggingBuilder =>
     {
-        loggingBuilder.AddSeq(config.GetSection("Seq"));
+        loggingBuilder.AddConsole();
+        loggingBuilder.AddSeq(config.GetSection("Logging:Seq"));
         loggingBuilder.AddElasticsearch(elasticConf =>
         {
-            elasticConf.ShipTo = config.GetRequiredSection("Elastic").Get<Elastic.Extensions.Logging.Options.ShipToOptions>();
+            elasticConf.ShipTo = config.GetRequiredSection("Logging:Elastic").Get<Elastic.Extensions.Logging.Options.ShipToOptions>()!;
         });
     });
 builder.Services.AddHttpLogging(opts =>

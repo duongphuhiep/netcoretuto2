@@ -13,6 +13,7 @@ internal static class Global
     public static readonly ILoggerFactory LogFactory = LoggerFactory.Create(loggingBuilder =>
     {
         loggingBuilder.AddConfiguration(Config.GetSection("Logging"));
+        loggingBuilder.AddSimpleConsole();
         loggingBuilder.AddSeq(Config.GetSection("Logging:Seq"));
         loggingBuilder.AddElasticsearch(elasticConf =>
         {
