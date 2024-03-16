@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30011.22
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "poc.client", "clean-architect\poc.client.csproj", "{0A177BC8-930A-4B36-A7A2-DB01AD915A21}"
 EndProject
@@ -14,9 +14,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "demo001", "demo001\demo001.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "demo002.mstest", "demo002.mstest\demo002.mstest.csproj", "{310345E3-4651-42C0-9137-239BFF1B7C16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "demo003.graphql", "demo003.graphql\demo003.graphql.csproj", "{81BC304C-1855-445C-AB0F-28C2EB844D7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "demo003.graphql", "demo003.graphql\demo003.graphql.csproj", "{81BC304C-1855-445C-AB0F-28C2EB844D7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphQL", "GraphQL\GraphQL.csproj", "{8DEB3E26-EF10-4FBD-ABB8-FEDFC50D3C22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphQL", "GraphQL\GraphQL.csproj", "{8DEB3E26-EF10-4FBD-ABB8-FEDFC50D3C22}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleApi", "SampleApi\SampleApi.csproj", "{B0D05A9F-8ADD-4A99-B3F8-061C34199A51}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +90,18 @@ Global
 		{8DEB3E26-EF10-4FBD-ABB8-FEDFC50D3C22}.Release|x64.Build.0 = Release|Any CPU
 		{8DEB3E26-EF10-4FBD-ABB8-FEDFC50D3C22}.Release|x86.ActiveCfg = Release|Any CPU
 		{8DEB3E26-EF10-4FBD-ABB8-FEDFC50D3C22}.Release|x86.Build.0 = Release|Any CPU
+		{B0D05A9F-8ADD-4A99-B3F8-061C34199A51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0D05A9F-8ADD-4A99-B3F8-061C34199A51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0D05A9F-8ADD-4A99-B3F8-061C34199A51}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B0D05A9F-8ADD-4A99-B3F8-061C34199A51}.Debug|x64.Build.0 = Debug|Any CPU
+		{B0D05A9F-8ADD-4A99-B3F8-061C34199A51}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B0D05A9F-8ADD-4A99-B3F8-061C34199A51}.Debug|x86.Build.0 = Debug|Any CPU
+		{B0D05A9F-8ADD-4A99-B3F8-061C34199A51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0D05A9F-8ADD-4A99-B3F8-061C34199A51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0D05A9F-8ADD-4A99-B3F8-061C34199A51}.Release|x64.ActiveCfg = Release|Any CPU
+		{B0D05A9F-8ADD-4A99-B3F8-061C34199A51}.Release|x64.Build.0 = Release|Any CPU
+		{B0D05A9F-8ADD-4A99-B3F8-061C34199A51}.Release|x86.ActiveCfg = Release|Any CPU
+		{B0D05A9F-8ADD-4A99-B3F8-061C34199A51}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

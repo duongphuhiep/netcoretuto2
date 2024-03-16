@@ -1,13 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+using Microsoft.Extensions.Logging;
 
-namespace demo001
+namespace demo001;
+
+class Program
 {
-    class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            Global.Log.LogInformation("Hello, world");
-        }
+        Global.Log.LogInformation("Hello, world");
+        Console.ReadLine();
     }
 }

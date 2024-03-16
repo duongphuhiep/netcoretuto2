@@ -1,21 +1,24 @@
-﻿using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using NLog.Extensions.Logging;
-using ToolsPack.NLog;
+using Elastic.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
-namespace demo001
+namespace demo001;
+
+internal static class Global
 {
-    internal static class Global
+    public static readonly IConfiguration Config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+        .Build();
+
+    public static readonly ILoggerFactory LogFactory = LoggerFactory.Create(loggingBuilder =>
     {
-        public static readonly ILoggerFactory LogFactory = LoggerFactory.Create(builder =>
+        loggingBuilder.AddConfiguration(Config.GetSection("Logging"));
+        loggingBuilder.AddSeq(Config.GetSection("Logging:Seq"));
+        loggingBuilder.AddElasticsearch(elasticConf =>
         {
-            builder.SetMinimumLevel(LogLevel.Trace);
-            builder.AddNLog(LogQuickConfig.SetupFileAndConsole("./logs/demo001.log"));
-
-            LogQuickConfig.UseNewtonsoftJson();
-            JsonConvert.DefaultSettings = () => LogQuickConfig.DefaultJsonSerializerSettings;
+            elasticConf.ShipTo = Config.GetRequiredSection("Logging:Elastic").Get<Elastic.Extensions.Logging.Options.ShipToOptions>()!;
         });
+    });
 
-        public static readonly ILogger Log = LogFactory.CreateLogger("G");
-    }
+    public static readonly ILogger Log = LogFactory.CreateLogger("G");
 }
