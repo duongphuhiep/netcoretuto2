@@ -14,22 +14,41 @@ namespace GenericAspApi;
 
 public static class AppFactory
 {
-    //static bool ShouldCollectTrace(PathString path) =>
-    //        !path.HasValue ||
-    //        (!path.Value.StartsWith("/metrics", StringComparison.InvariantCultureIgnoreCase)
-    //        && !path.Value.StartsWith("/health", StringComparison.InvariantCultureIgnoreCase)
-    //        && !path.Value.StartsWith("/swagger", StringComparison.InvariantCultureIgnoreCase)
-    //        && !path.Value.StartsWith("/_framework", StringComparison.InvariantCultureIgnoreCase)
-    //        && !path.Value.StartsWith("/_vs", StringComparison.InvariantCultureIgnoreCase)
-    //        && !path.Value.StartsWith("/version", StringComparison.InvariantCultureIgnoreCase));
+    static bool ShouldCollectIncomingRequestTrace(PathString path) => path.HasValue && path.Value.StartsWith("/api", StringComparison.InvariantCultureIgnoreCase);
 
-    static bool ShouldCollectTrace(PathString path) => path.HasValue && path.Value.StartsWith("/api", StringComparison.InvariantCultureIgnoreCase);
+    static bool ShouldCollectOutgoingRequestTrace(Uri? outgoingRequest, Uri? seqServerUrl, Elastic.Extensions.Logging.Options.ShipToOptions? elasticShipToOptions)
+    {
+        if (outgoingRequest == null) return false;
+
+        if (seqServerUrl is not null && IsCalling(outgoingRequest, seqServerUrl))
+        {
+            //the outgoing request is calling Seq
+            return false;
+        }
+
+        if (elasticShipToOptions?.NodeUris is not null && Array.Exists(elasticShipToOptions.NodeUris, u => IsCalling(outgoingRequest, u)))
+        {
+            //the outgoing request is calling Elastic
+            return false;
+        }
+        return true;
+    }
+
+    static bool IsCalling(Uri outgoingRequest, Uri serviceUri)
+    {
+        return
+            outgoingRequest.Scheme == serviceUri.Scheme
+            && outgoingRequest.Host == serviceUri.Host
+            && outgoingRequest.Port == serviceUri.Port;
+    }
 
     public static WebApplication Create()
     {
         var builder = WebApplication.CreateBuilder();
 
         var config = builder.Configuration;
+
+        #region Get application name
 
         var assemblyName = Assembly.GetExecutingAssembly().GetName();
         var applicationName = config?["ApplicationName"]
@@ -38,8 +57,18 @@ public static class AppFactory
         var applicationVersion = config?["ApplicationVersion"]
             ?? assemblyName.Version?.ToString()
             ?? "0.0.0.0";
-
         builder.Environment.ApplicationName = applicationName;
+
+        #endregion
+
+        #region Get Logging Servers config (Elastic & Seq)
+
+        var elasticShipToOptions = config?.GetSection("Logging:Elastic").Get<Elastic.Extensions.Logging.Options.ShipToOptions>();
+        var seqConfig = config?.GetSection("Logging:Seq");
+        var seqServerUrlRaw = seqConfig?["ServerUrl"];
+        var seqServerUrl = string.IsNullOrEmpty(seqServerUrlRaw) ? null : new Uri(seqServerUrlRaw);
+
+        #endregion
 
         var otel = builder.Services.AddOpenTelemetry();
         otel.ConfigureResource(resource => resource
@@ -50,9 +79,12 @@ public static class AppFactory
                 .AddSource(applicationName)
                 .AddAspNetCoreInstrumentation(istOptions =>
                 {
-                    istOptions.Filter = httpContext => ShouldCollectTrace(httpContext.Request.Path);
+                    istOptions.Filter = httpContext => ShouldCollectIncomingRequestTrace(httpContext.Request.Path);
                 })
-                .AddHttpClientInstrumentation()
+                .AddHttpClientInstrumentation(istOptions =>
+                {
+                    istOptions.FilterHttpRequestMessage = httpRequestMessage => ShouldCollectOutgoingRequestTrace(httpRequestMessage.RequestUri, seqServerUrl, elasticShipToOptions);
+                })
                 .AddConsoleExporter()
                 .AddOtlpExporter(otlpOptions =>
                 {
@@ -72,11 +104,17 @@ public static class AppFactory
             .AddLogging(loggingBuilder =>
             {
                 loggingBuilder.AddConsole();
-                loggingBuilder.AddSeq(config?.GetRequiredSection("Logging:Seq"));
-                loggingBuilder.AddElasticsearch(elasticConf =>
+                if (seqServerUrl is not null)
                 {
-                    elasticConf.ShipTo = config?.GetRequiredSection("Logging:Elastic").Get<Elastic.Extensions.Logging.Options.ShipToOptions>()!;
-                });
+                    loggingBuilder.AddSeq(seqConfig);
+                }
+                if (elasticShipToOptions is not null)
+                {
+                    loggingBuilder.AddElasticsearch(elasticConf =>
+                    {
+                        elasticConf.ShipTo = elasticShipToOptions;
+                    });
+                }
             })
             .AddHttpLogging(opts =>
             {
