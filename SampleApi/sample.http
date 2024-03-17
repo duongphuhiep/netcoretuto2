@@ -1,4 +1,6 @@
-POST https://localhost:7210/hello?page=api&line=auto
+# Don't run it from Visual Studio, Telemetry won't see the request
+
+POST https://localhost:7210/api/hello?page=api&line=auto
 Content-Type: application/json
 
 {
@@ -8,7 +10,7 @@ Content-Type: application/json
 
 ###
 
-POST https://localhost:7210/hello-failed?page=api&line=auto
+POST https://localhost:7210/api/hello-failed?page=api&line=auto
 Content-Type: application/json
 
 {

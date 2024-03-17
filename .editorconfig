@@ -7,8 +7,8 @@ indent_size = 4
 # We recommend you to keep these unchanged
 end_of_line = lf
 charset = utf-8
-#trim_trailing_whitespace = false
-#insert_final_newline = true
+trim_trailing_whitespace = true
+# insert_final_newline = true
 
 [*.cs]
 
@@ -16,28 +16,25 @@ charset = utf-8
 dotnet_diagnostic.CC0001.severity = silent
 
 # S125: Sections of code should not be commented out
-dotnet_diagnostic.S125.severity = silent
+dotnet_diagnostic.S125.severity = suggestion
 
 # S4457: Parameter validation in "async"/"await" methods should be wrapped
-dotnet_diagnostic.S4457.severity = silent
+dotnet_diagnostic.S4457.severity = suggestion
+
+# S101: Types should be named in PascalCase
+dotnet_diagnostic.S101.severity = suggestion
 
 # CS1591: Missing XML comment for publicly visible type or member
 dotnet_diagnostic.CS1591.severity = suggestion
 
-# CA2007: Do not directly await a Task
-dotnet_diagnostic.CA2007.severity = error
-
-# S101: Types should be named in PascalCase
-dotnet_diagnostic.S101.severity = silent
-
 # CS1570: XML comment has badly formed XML
-dotnet_diagnostic.CS1570.severity = silent
+dotnet_diagnostic.CS1570.severity = suggestion
 
 # CC0097: You have missing/unexistent parameters in Xml Docs
-dotnet_diagnostic.CC0097.severity = silent
+dotnet_diagnostic.CC0097.severity = suggestion
 
 # CC0105: You should use 'var' whenever possible.
-dotnet_diagnostic.CC0105.severity = silent
+dotnet_diagnostic.CC0105.severity = suggestion
 
 # CC0021: Use nameof
 dotnet_diagnostic.CC0021.severity = suggestion
