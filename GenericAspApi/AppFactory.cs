@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using System.Reflection;
@@ -14,34 +16,6 @@ namespace GenericAspApi;
 
 public static class AppFactory
 {
-    static bool ShouldCollectIncomingRequestTrace(PathString path) => path.HasValue && path.Value.StartsWith("/api", StringComparison.InvariantCultureIgnoreCase);
-
-    static bool ShouldCollectOutgoingRequestTrace(Uri? outgoingRequest, Uri? seqServerUrl, Elastic.Extensions.Logging.Options.ShipToOptions? elasticShipToOptions)
-    {
-        if (outgoingRequest == null) return false;
-
-        if (seqServerUrl is not null && IsCalling(outgoingRequest, seqServerUrl))
-        {
-            //the outgoing request is calling Seq
-            return false;
-        }
-
-        if (elasticShipToOptions?.NodeUris is not null && Array.Exists(elasticShipToOptions.NodeUris, u => IsCalling(outgoingRequest, u)))
-        {
-            //the outgoing request is calling Elastic
-            return false;
-        }
-        return true;
-    }
-
-    static bool IsCalling(Uri outgoingRequest, Uri serviceUri)
-    {
-        return
-            outgoingRequest.Scheme == serviceUri.Scheme
-            && outgoingRequest.Host == serviceUri.Host
-            && outgoingRequest.Port == serviceUri.Port;
-    }
-
     public static WebApplication Create()
     {
         var builder = WebApplication.CreateBuilder();
@@ -70,6 +44,21 @@ public static class AppFactory
 
         #endregion
 
+        #region OpenTelemetry
+
+        var otlpExporterUri = GetOtelExporterGrpcEndpoint(config);
+
+        builder.Logging.AddOpenTelemetry(logging =>
+        {
+            logging.IncludeFormattedMessage = true;
+            logging.IncludeScopes = true;
+            logging.AddOtlpExporter(otlpOptions =>
+            {
+                otlpOptions.Endpoint = otlpExporterUri;
+                otlpOptions.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
+            });
+        });
+
         var otel = builder.Services.AddOpenTelemetry();
         otel.ConfigureResource(resource => resource
             .AddService(serviceName: builder.Environment.ApplicationName, serviceVersion: applicationVersion));
@@ -88,17 +77,44 @@ public static class AppFactory
                 .AddConsoleExporter()
                 .AddOtlpExporter(otlpOptions =>
                 {
-                    otlpOptions.Endpoint = new Uri(config?["JaegerGrpcUrl"] ?? "http://localhost:4317");
+                    otlpOptions.Endpoint = otlpExporterUri;
                     otlpOptions.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
                     //otlpOptions.ExportProcessorType = OpenTelemetry.ExportProcessorType.Simple;
                 });
+            if (builder.Environment.IsDevelopment())
+            {
+                // We want to view all traces in development
+                tracing.SetSampler(new AlwaysOnSampler());
+            }
         });
+        otel.WithMetrics(metrics =>
+        {
+            metrics.AddAspNetCoreInstrumentation()
+                   .AddHttpClientInstrumentation()
+                   .AddProcessInstrumentation()
+                   .AddRuntimeInstrumentation();
+        });
+
+        //var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
+        //if (useOtlpExporter)
+        //{
+        //    builder.Services.Configure<OpenTelemetryLoggerOptions>(logging => logging.AddOtlpExporter());
+        //    builder.Services.ConfigureOpenTelemetryMeterProvider(metrics => metrics.AddOtlpExporter());
+        //    builder.Services.ConfigureOpenTelemetryTracerProvider(tracing => tracing.AddOtlpExporter());
+        //}
+
+
+        #endregion
 
         builder.Services.AddControllers();
 
+        builder.Services.ConfigureHttpClientDefaults(http =>
+        {
+            // Turn on service discovery
+            //http.UseServiceDiscovery();
+        });
         builder.Services
             .AddHttpContextAccessor()
-            .AddHttpClient()
             .AddEndpointsApiExplorer()
             .AddSwaggerGen()
             .AddLogging(loggingBuilder =>
@@ -134,15 +150,15 @@ public static class AppFactory
 
         var app = builder.Build();
 
+        //log all request and response
+        app.UseHttpLogging();
+
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
-        //log all request and response
-        app.UseHttpLogging();
 
         app.UseHttpsRedirection();
 
@@ -151,5 +167,39 @@ public static class AppFactory
         app.MapControllers();
 
         return app;
+    }
+
+    static bool ShouldCollectIncomingRequestTrace(PathString path) => path.HasValue && path.Value.StartsWith("/api", StringComparison.InvariantCultureIgnoreCase);
+
+    static bool ShouldCollectOutgoingRequestTrace(Uri? outgoingRequest, Uri? seqServerUrl, Elastic.Extensions.Logging.Options.ShipToOptions? elasticShipToOptions)
+    {
+        if (outgoingRequest == null) return false;
+
+        if (seqServerUrl is not null && IsCalling(outgoingRequest, seqServerUrl))
+        {
+            //the outgoing request is calling Seq
+            return false;
+        }
+
+        if (elasticShipToOptions?.NodeUris is not null && Array.Exists(elasticShipToOptions.NodeUris, u => IsCalling(outgoingRequest, u)))
+        {
+            //the outgoing request is calling Elastic
+            return false;
+        }
+        return true;
+    }
+
+    static bool IsCalling(Uri outgoingRequest, Uri serviceUri)
+    {
+        return
+            outgoingRequest.Scheme == serviceUri.Scheme
+            && outgoingRequest.Host == serviceUri.Host
+            && outgoingRequest.Port == serviceUri.Port;
+    }
+
+    static Uri GetOtelExporterGrpcEndpoint(IConfiguration? config)
+    {
+        var endpoint = config?["OTEL_EXPORTER_OTLP_ENDPOINT"] ?? config?["JaegerGrpcUrl"] ?? "http://localhost:4317";
+        return new Uri(endpoint);
     }
 }
