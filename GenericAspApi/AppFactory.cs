@@ -1,9 +1,11 @@
 using Elastic.Extensions.Logging;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OpenTelemetry.Logs;
@@ -18,9 +20,65 @@ public static class AppFactory
 {
     public static WebApplication Create()
     {
+        WebApplicationBuilder builder = ConfigureServices();
+
+        var app = builder.Build();
+
+        // Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
+
+        #region default endpoint
+
+        // Uncomment the following line to enable the Prometheus endpoint(requires the OpenTelemetry.Exporter.Prometheus.AspNetCore package)
+        // app.MapPrometheusScrapingEndpoint();
+
+        // All health checks must pass for app to be considered ready to accept traffic after starting
+        app.MapHealthChecks("/health");
+
+        // Only health checks tagged with the "live" tag must pass for app to be considered alive
+        app.MapHealthChecks("/alive", new HealthCheckOptions
+        {
+            Predicate = r => r.Tags.Contains("live")
+        });
+
+        #endregion
+
+        app.UseHttpsRedirection();
+
+        //log all request and response
+        app.UseHttpLogging();
+
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+        return app;
+    }
+
+    private static WebApplicationBuilder ConfigureServices()
+    {
         var builder = WebApplication.CreateBuilder();
 
         var config = builder.Configuration;
+
+        #region Service Discovery
+
+        builder.Services.AddServiceDiscovery();
+
+        builder.Services.ConfigureHttpClientDefaults(http =>
+        {
+            // Turn on resilience by default
+            //http.AddStandardResilienceHandler();
+
+            // Turn on service discovery by default
+            http.UseServiceDiscovery();
+        });
+
+        #endregion
 
         #region Get application name
 
@@ -35,12 +93,49 @@ public static class AppFactory
 
         #endregion
 
-        #region Get Logging Servers config (Elastic & Seq)
+        #region Get Config Elastic & Seq
 
         var elasticShipToOptions = config?.GetSection("Logging:Elastic").Get<Elastic.Extensions.Logging.Options.ShipToOptions>();
         var seqConfig = config?.GetSection("Logging:Seq");
         var seqServerUrlRaw = seqConfig?["ServerUrl"];
         var seqServerUrl = string.IsNullOrEmpty(seqServerUrlRaw) ? null : new Uri(seqServerUrlRaw);
+
+        #endregion
+
+        #region Logging to Seq Elastic and Http Logging Middleware
+
+        builder.Services
+            .AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.AddConsole();
+                if (seqServerUrl is not null)
+                {
+                    loggingBuilder.AddSeq(seqConfig);
+                }
+                if (elasticShipToOptions is not null)
+                {
+                    loggingBuilder.AddElasticsearch(elasticConf =>
+                    {
+                        elasticConf.ShipTo = elasticShipToOptions;
+                    });
+                }
+                loggingBuilder.AddOpenTelemetry();
+            })
+            .AddHttpLogging(opts =>
+            {
+                opts.CombineLogs = true;
+                opts.LoggingFields = HttpLoggingFields.All;
+
+                //log the body as text for the following types of requests
+                opts.MediaTypeOptions.AddText("application/json", Encoding.UTF8);
+                opts.MediaTypeOptions.AddText("text/json", Encoding.UTF8);
+                opts.MediaTypeOptions.AddText("text/plain", Encoding.UTF8);
+                opts.MediaTypeOptions.AddText("application/xml", Encoding.UTF8);
+                opts.MediaTypeOptions.AddText("application/x-www-form-urlencoded", Encoding.UTF8);
+                opts.MediaTypeOptions.AddText("multipart/form-data", Encoding.UTF8);
+                opts.RequestBodyLogLimit = 4096;
+                opts.ResponseBodyLogLimit = 4096;
+            });
 
         #endregion
 
@@ -74,7 +169,7 @@ public static class AppFactory
                 {
                     istOptions.FilterHttpRequestMessage = httpRequestMessage => ShouldCollectOutgoingRequestTrace(httpRequestMessage.RequestUri, seqServerUrl, elasticShipToOptions);
                 })
-                .AddConsoleExporter()
+                //.AddConsoleExporter()
                 .AddOtlpExporter(otlpOptions =>
                 {
                     otlpOptions.Endpoint = otlpExporterUri;
@@ -106,67 +201,22 @@ public static class AppFactory
 
         #endregion
 
+        #region Health check
+
+        builder.Services.AddHealthChecks()
+           // Add a default liveness check to ensure app is responsive
+           .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"]);
+
+        #endregion
+
         builder.Services.AddControllers();
 
-        builder.Services.ConfigureHttpClientDefaults(http =>
-        {
-            // Turn on service discovery
-            //http.UseServiceDiscovery();
-        });
         builder.Services
             .AddHttpContextAccessor()
             .AddEndpointsApiExplorer()
-            .AddSwaggerGen()
-            .AddLogging(loggingBuilder =>
-            {
-                loggingBuilder.AddConsole();
-                if (seqServerUrl is not null)
-                {
-                    loggingBuilder.AddSeq(seqConfig);
-                }
-                if (elasticShipToOptions is not null)
-                {
-                    loggingBuilder.AddElasticsearch(elasticConf =>
-                    {
-                        elasticConf.ShipTo = elasticShipToOptions;
-                    });
-                }
-            })
-            .AddHttpLogging(opts =>
-            {
-                opts.CombineLogs = true;
-                opts.LoggingFields = HttpLoggingFields.All;
+            .AddSwaggerGen();
 
-                //log the body as text for the following types of requests
-                opts.MediaTypeOptions.AddText("application/json", Encoding.UTF8);
-                opts.MediaTypeOptions.AddText("text/json", Encoding.UTF8);
-                opts.MediaTypeOptions.AddText("text/plain", Encoding.UTF8);
-                opts.MediaTypeOptions.AddText("application/xml", Encoding.UTF8);
-                opts.MediaTypeOptions.AddText("application/x-www-form-urlencoded", Encoding.UTF8);
-                opts.MediaTypeOptions.AddText("multipart/form-data", Encoding.UTF8);
-                opts.RequestBodyLogLimit = 4096;
-                opts.ResponseBodyLogLimit = 4096;
-            });
-
-        var app = builder.Build();
-
-        //log all request and response
-        app.UseHttpLogging();
-
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
-
-        app.UseHttpsRedirection();
-
-        app.UseAuthorization();
-
-        app.MapControllers();
-
-        return app;
+        return builder;
     }
 
     static bool ShouldCollectIncomingRequestTrace(PathString path) => path.HasValue && path.Value.StartsWith("/api", StringComparison.InvariantCultureIgnoreCase);
