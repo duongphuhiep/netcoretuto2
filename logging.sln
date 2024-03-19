@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TransactionService", "Trans
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleAspireApp.AppHost", "SampleAspireApp\SampleAspireApp.AppHost\SampleAspireApp.AppHost.csproj", "{ED8457FE-166B-44E5-8907-94E31F7C233F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleAspireApp.ServiceDefaults", "SampleAspireApp\SampleAspireApp.ServiceDefaults\SampleAspireApp.ServiceDefaults.csproj", "{C7731ED1-5A52-4352-A514-A5E03FD86106}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Single", "Single", "{9AB1A03D-CF93-4583-B88B-A6C5C684984B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,13 +47,13 @@ Global
 		{ED8457FE-166B-44E5-8907-94E31F7C233F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED8457FE-166B-44E5-8907-94E31F7C233F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED8457FE-166B-44E5-8907-94E31F7C233F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C7731ED1-5A52-4352-A514-A5E03FD86106}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C7731ED1-5A52-4352-A514-A5E03FD86106}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C7731ED1-5A52-4352-A514-A5E03FD86106}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C7731ED1-5A52-4352-A514-A5E03FD86106}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{14D18CEF-CCBE-457E-98FB-4D20168B628E} = {9AB1A03D-CF93-4583-B88B-A6C5C684984B}
+		{A7A0CAD9-6DBC-429B-8742-7912DB9E92BB} = {9AB1A03D-CF93-4583-B88B-A6C5C684984B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {137F6729-5F26-4F83-91F5-575DC9A2673F}
