@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleAspireApp.AppHost", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Single", "Single", "{9AB1A03D-CF93-4583-B88B-A6C5C684984B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthService", "AuthService\AuthService.csproj", "{F78DAA49-DF97-457C-BA8C-5712038D314A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{ED8457FE-166B-44E5-8907-94E31F7C233F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED8457FE-166B-44E5-8907-94E31F7C233F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED8457FE-166B-44E5-8907-94E31F7C233F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F78DAA49-DF97-457C-BA8C-5712038D314A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F78DAA49-DF97-457C-BA8C-5712038D314A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F78DAA49-DF97-457C-BA8C-5712038D314A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F78DAA49-DF97-457C-BA8C-5712038D314A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

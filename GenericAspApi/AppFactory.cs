@@ -119,7 +119,6 @@ public static class AppFactory
                         elasticConf.ShipTo = elasticShipToOptions;
                     });
                 }
-                loggingBuilder.AddOpenTelemetry();
             })
             .AddHttpLogging(opts =>
             {
@@ -142,18 +141,6 @@ public static class AppFactory
         #region OpenTelemetry
 
         var otlpExporterUri = GetOtelExporterGrpcEndpoint(config);
-
-        builder.Logging.AddOpenTelemetry(logging =>
-        {
-            logging.IncludeFormattedMessage = true;
-            logging.IncludeScopes = true;
-            logging.AddOtlpExporter(otlpOptions =>
-            {
-                otlpOptions.Endpoint = otlpExporterUri;
-                otlpOptions.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
-            });
-        });
-
         var otel = builder.Services.AddOpenTelemetry();
         otel.ConfigureResource(resource => resource
             .AddService(serviceName: builder.Environment.ApplicationName, serviceVersion: applicationVersion));
@@ -189,6 +176,19 @@ public static class AppFactory
                    .AddProcessInstrumentation()
                    .AddRuntimeInstrumentation();
         });
+
+        //log the trace
+        builder.Logging.AddOpenTelemetry(logging =>
+        {
+            logging.IncludeFormattedMessage = true;
+            logging.IncludeScopes = true;
+            logging.AddOtlpExporter(otlpOptions =>
+            {
+                otlpOptions.Endpoint = otlpExporterUri;
+                otlpOptions.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
+            });
+        });
+
 
         //var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
         //if (useOtlpExporter)

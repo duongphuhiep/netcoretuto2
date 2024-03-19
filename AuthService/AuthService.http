@@ -1,0 +1,3 @@
+# Don't run it from Visual Studio, Telemetry won't see the request
+
+POST https://localhost:59089/api/checkAllow

@@ -9,8 +9,9 @@ var appActivitySource = new ActivitySource(app.Environment.ApplicationName);
 app.MapPost("/api/createTransaction", async ([FromServices] ILogger<Program> logger, [FromServices] HttpClient httpClient) =>
 {
     logger.LogInformation("start createTransaction");
-    //await httpClient.GetStringAsync("https://httpstat.us/200?sleep=1000");
-    //await httpClient.GetStringAsync("https://httpstat.us/301"); //this will make 2 https requests to return the response because the target URI returns a redirection HTTP 301
+    var authResult = await httpClient.PostAsJsonAsync("https://authService/api/checkAllow", "{}");
+    logger.LogInformation("authorization result is {authResult}", authResult);
+    await httpClient.GetStringAsync("https://httpstat.us/200?sleep=300");
     logger.LogInformation("end createTransaction");
     return "OK";
 });
