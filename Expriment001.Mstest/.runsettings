@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+    <Loggers>
+        <Logger friendlyName="console" enabled="True">
+            <Configuration>
+                <Verbosity>detailed</Verbosity>
+            </Configuration>
+        </Logger>
+    </Loggers>
+</RunSettings>
