@@ -9,13 +9,22 @@
 
     <ItemGroup>
         <ProjectReference Include="..\BlazorApp1.Client\BlazorApp1.Client.csproj"/>
+        <PackageReference Include="Blazicons.Lucide" Version="1.8.24" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.6"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+        <Content Include="..\..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
+
+    <ItemGroup>
+        <_ContentIncludedByDefault Remove="wwwroot\css\td.css" />
+    </ItemGroup>
+
+    <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+        <Exec Command="bash &quot;$(ProjectDir)prebuild.sh&quot;" />
+    </Target>
 
 </Project>

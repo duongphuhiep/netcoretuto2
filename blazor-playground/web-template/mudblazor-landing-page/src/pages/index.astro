@@ -1,8 +1,245 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { Camera } from '@lucide/astro';
+import { Car, Menu, Search } from '@lucide/astro';
+import Logo from '../assets/mudblazor.svg';
+import GithubLogo from '../assets/github-mark.svg';
+import CodesIcon from '../assets/codes-icon.svg';
+import BoxIcon from '../assets/box-icon.svg';
+import CodeSample from '../components/CodeSample.md';
+import CardSample from '../components/CardSample.astro';
 ---
 
 <Layout>
-    <button class='btn btn-primary'><Camera color='#ff3e98' />Ha</button>
+    <nav class='flex justify-between items-center px-6 py-4 bg-base-200'>
+        <Menu />
+        <div class='flex'>
+            <div class='w-[40px]'><Logo /></div>
+            <div
+                class='tracking-[0.2rem] font-normal ms-3 text-2xl text-primary'>
+                MudBlazor
+            </div>
+        </div>
+        <Search />
+    </nav>
+
+    <!-- start hero section with darker background -->
+    <section class='bg-base-200'>
+        <!-- hero section -->
+        <div class='pt-4 mx-6'>
+            <div class='text-[clamp(2rem,8vw,4rem)] font-bold mt-20'>
+                <h1>The Blazor</h1>
+                <span
+                    class='bg-[linear-gradient(82deg,rgb(89,74,226)_0%,rgb(255,102,153)_100%)] bg-clip-text text-transparent'
+                    >Component</span
+                >
+                Library
+                <h1>You always wanted</h1>
+            </div>
+            <p class='my-8 landing-text'>
+                With millions of downloads, from hobby developers to large
+                enterprises, MudBlazor enables you to rapidly build amazing web
+                applications without leaving your beloved C# language and
+                toolchain.
+            </p>
+            <div>
+                <button class='btn btn-primary text-[clamp(0.75rem,4vw,1rem)]'
+                    >Get started</button
+                >
+                <button
+                    class='btn btn-outline mx-3 text-[clamp(0.50rem,4vw,1rem)]'
+                    ><div><GithubLogo width='20px' class='fill-current' /></div>
+                    Star on GitHub</button
+                >
+            </div>
+        </div>
+        <!-- end hero section -->
+
+        <!-- skew band decoration in primary color and darker background -->
+        <!-- 10.628% is half the height of the skew = tan(12deg)/2 -->
+        <div class='py-[10.628%]'>
+            <div class='skew-y-[-12deg] w-full h-[200px] bg-primary'></div>
+        </div>
+
+        <!-- start sponsor section with darker background -->
+        <div class='mx-6 pb-30'>
+            <p class='landing-text text-center my-20'>
+                The continued development and maintenance of MudBlazor is
+                secured by our sponsors
+            </p>
+
+            <div class='flex gap-20 flex-row flex-wrap justify-center'>
+                <img src='./assets/Adaris.png' />
+                <img src='./assets/Balesio.png' />
+                <img src='./assets/Blackhawk.png' />
+                <img src='./assets/Lithe.png' />
+                <img src='./assets/Timewarp.png' />
+                <img src='./assets/JetBrains.png' />
+            </div>
+
+            <div class='landing-text text-center mt-20'>
+                Become our sponsors
+            </div>
+        </div>
+    </section>
+    <!-- end darker background -->
+
+    <!-- start testimonials section group with default background -->
+    <section class='pt-30 pb-10 mx-6'>
+        <div class='flex flex-col gap-5 mx-auto max-w-5xl'>
+            <div class='text-primary font-bold'>Unified platform</div>
+            <div class='text-2xl font-bold'>
+                MudBlazor is more than a library
+            </div>
+            <div class='flex flex-col gap-8 md:flex-row'>
+                <div class='landing-text md:flex-1'>
+                    We bring together everything that's required to build
+                    amazing Blazor applications that scale from desktop to
+                    mobile. Apart from the library itself we also provide
+                    templates, a learning platform, theme manager, demo and
+                    example projects as well as an online code editor integrated
+                    withcode-sample our documentation and issue tracking. With
+                    more to come.
+                </div>
+                <div class='landing-text md:flex-1'>
+                    We help companies build amazing apps in record time and let
+                    them focus on their business instead of buttons, MudBlazor
+                    is battle-tested and one of the fastest-improving platforms,
+                    and much more.
+                </div>
+            </div>
+        </div>
+        <div class='my-20 text-[clamp(1rem,6vw,3rem)] text-center'>
+            “Never had such a good time making a site“
+        </div>
+
+        <!-- testimonials -->
+        <section>
+            <div class='bg-base-300 rounded p-6'>testimonial cards..</div>
+        </section>
+    </section>
+
+    <!-- 12-deg skewed horizontal splitter -->
+    <!-- 10.628% is half the height of this skewed splitter = tan(12deg)/2 -->
+    <div
+        class='bg-[linear-gradient(-12deg,var(--color-base-200)_50%,var(--color-base-100)_50%)] py-[10.628%]'>
+    </div>
+
+    <!-- start code-sample section group with darker background -->
+    <section class='bg-base-200 py-30'>
+        <div class='flex gap-5 flex-row flex-wrap mx-auto max-w-7xl'>
+            <div class='flex-1 min-w-sm mx-6'>
+                <div class='flex flex-col gap-5'>
+                    <div class='text-primary font-bold'>
+                        Designed for developers
+                    </div>
+                    <div class='text-2xl font-bold'>
+                        Developers love to work with MudBlazor
+                    </div>
+                    <div class='landing-text'>
+                        We started MudBlazor with a simple promise, to empower
+                        the developer and fully take advantage of what Blazor
+                        offers. With MudBlazor you can create exceptional apps
+                        without the burden of mastering HTML, CSS and JS and
+                        focus your skillset on C#.
+                    </div>
+                </div>
+                <div
+                    class='flex flex-col gap-8 md:flex-row mt-10 landing-text-small'>
+                    <div class='md:flex-1 flex flex-col gap-5'>
+                        <div><CodesIcon width='36' height='36' /></div>
+                        <h3>TryMudBlazor</h3>
+                        <div class='opacity-50'>
+                            Use the full power of Blazor directly in your
+                            browser with TryMudBlazor.<br />
+                            Fully-fledged editor with IntelliSense, multiple files
+                            and ability to save your code.
+                        </div>
+                        <div class='link link-primary'>Test online</div>
+                    </div>
+                    <div class='md:flex-1 flex flex-col gap-5'>
+                        <div><BoxIcon width='36' height='36' /></div>
+                        <h3>Templates</h3>
+                        <div class='opacity-50'>
+                            We provide all the default Blazor templates but pre
+                            configured with MudBlazor to help you get started
+                            faster.
+                        </div>
+                        <div class='link link-primary'>Explore templates</div>
+                    </div>
+                </div>
+            </div>
+            <div class='flex-1 min-w-sm mx-6'>
+                <!-- code sample -->
+                <div class='bg-[#24292e] w-full p-5 rounded'>
+                    <CodeSample />
+                </div>
+                <!-- card -->
+                <div class='bg-base-100 w-96 shadow-sm ml-[64px] mt-[-48px]'>
+                    <CardSample />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 12-deg skewed horizontal splitter -->
+    <!-- 10.628% is half the height of this skewed splitter = tan(12deg)/2 -->
+    <div
+        class='bg-[linear-gradient(-12deg,var(--color-base-100)_50%,var(--color-base-200)_50%)] py-[10.628%]'>
+    </div>
+
+    <!-- start community section group with default background -->
+    <section class='pt-30'>
+        <div class='flex-1 min-w-sm mx-6'>
+            <div class='flex flex-col gap-5'>
+                <div class='text-primary font-bold'>Community</div>
+                <div class='text-2xl font-bold'>Join our community</div>
+                <div class='landing-text'>
+                    Do you have questions? Do you want to help others? Just talk
+                    or get news? Join one of our channels and become part of the
+                    MudBlazor community.
+                </div>
+            </div>
+            <div
+                class='flex flex-col gap-8 flex-wrap md:flex-row mt-10 landing-text-small'>
+                <div class='md:flex-1 flex flex-col gap-2 min-w-[20rem]'>
+                    <div><CodesIcon width='36' height='36' /></div>
+                    <h3>Twitter</h3>
+                    <div class='opacity-50'>
+                        For announcements, blog posts, and general MudBlazor
+                        stuff.
+                    </div>
+                    <div class='link link-primary'>Follow us</div>
+                </div>
+                <div class='md:flex-1 flex flex-col gap-2 min-w-[20rem]'>
+                    <div><BoxIcon width='36' height='36' /></div>
+                    <h3>Discord</h3>
+                    <div class='opacity-50'>
+                        To get involved in the community, ask questions, help
+                        others or just talk.
+                    </div>
+                    <div class='link link-primary'>Come and chat</div>
+                </div>
+                <div class='md:flex-1 flex flex-col gap-2 min-w-[20rem]'>
+                    <div><CodesIcon width='36' height='36' /></div>
+                    <h3>GitHub</h3>
+                    <div class='opacity-50'>
+                        To file issues, request features, and contribute, check
+                        out our GitHub.
+                    </div>
+                    <div class='link link-primary'>Check the code</div>
+                </div>
+                <div class='md:flex-1 flex flex-col gap-2 min-w-[20rem]'>
+                    <div><BoxIcon width='36' height='36' /></div>
+                    <h3>Stack Overflow</h3>
+                    <div class='opacity-50'>
+                        Active on Stack Overflow? Answer or ask question's under
+                        our tag.
+                    </div>
+                    <div class='link link-primary'>
+                        Ask and answer questions
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </Layout>
