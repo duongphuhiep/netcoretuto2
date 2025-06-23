@@ -1,21 +1,30 @@
 ---
+// Here I used my own custom drawer implementation similar to the one in the DaisyUI library.
+// Unlike DaisyUI Drawer, my implementation is more "portable" because we can place this component anywhere in the DOM.
+// while the DaisyUI's Drawer implementation requires to wrap the whole application.
+
 import DrawerContent from './DrawerContent.astro';
 ---
 
 <style>
+    /* the drawer host becomes visible immediately (at the first animation frame) when the checkbox is checked
+     it will fade the main content with a 50% opacity background */
     #drawer-toggler:checked + #drawer-host {
         visibility: visible;
         transition: visibility 0s;
     }
+    /* the drawer host is hidden by default. The visibility is set to hidden at the last animation frame
+     so that we can see the drawer sliding out animation */
     #drawer-toggler + #drawer-host {
         visibility: hidden;
         transition: visibility 0.2s;
     }
-
+    /* the actual drawer slides in from the left when the checkbox is checked */
     #drawer-toggler:checked + #drawer-host .my-drawer {
         transform: translateX(0);
         transition: transform 0.2s ease-in;
     }
+    /* the actual drawer slides out to the left when the checkbox is unchecked */
     #drawer-toggler + #drawer-host .my-drawer {
         transform: translateX(-20rem);
         transition: transform 0.2s ease-out;
@@ -26,22 +35,21 @@ import DrawerContent from './DrawerContent.astro';
 <input id='drawer-toggler' type='checkbox' checked class='hidden' />
 
 <!-- this "drawer-host" section is a transparent layer overlay the main content to host the drawer -->
-<!-- the drawer host is divided into 2 parts: the left part host the drawer, the right part host a clickable overlay -->
-<section id='drawer-host' class='fixed z-1000 h-full w-full flex flex-row'>
-    <!-- this 50% opacity overlay is used as the background of the drawer-host.
+<!-- the drawer host contains 2 parts: a "clickable 50% opacity overlay background", and actual "my-drawer" -->
+<section id='drawer-host' class='fixed z-1000 h-full w-full'>
+    <!-- this 50% opacity overlay is used as a "clickable background" of the drawer-host.
      When the drawer-host becomes visible, this overlay will be shown and fade the main content first,
-     then the actual "my-drawer" will slowly slide in. We cannot  directly set the opacity of the drawer-host
-     because it would impact the actual "my-drawer"'s opacity  -->
-    <div
-        class='absolute top-0 left-0 h-full w-full opacity-50 bg-base-100 z-10'>
-    </div>
+     then the actual "my-drawer" will slowly slide in.
+     We cannot  directly set the opacity of the drawer-host
+     because it would impact the actual "my-drawer"'s opacity -->
+    <label
+        for='drawer-toggler'
+        class='fixed h-full w-full opacity-50 bg-base-100'>
+    </label>
 
-    <!-- the left part is the "actual drawer" with a fixed width -->
+    <!-- the actual "my-drawer" has a fixed width -->
     <div
-        class='w-xs bg-base-100 opacity-95 shadow-2xl shadow-black my-drawer z-30'>
+        class='my-drawer w-xs h-full bg-base-100 opacity-95 shadow-2xl shadow-black z-2000'>
         <DrawerContent />
     </div>
-    <!-- the right part is a transparent layer covering the space outside the "actual drawer".
-         this clickable label allows to close the drawer when clicked -->
-    <label for='drawer-toggler' class='flex-1 bg-transparent z-20'></label>
 </section>
