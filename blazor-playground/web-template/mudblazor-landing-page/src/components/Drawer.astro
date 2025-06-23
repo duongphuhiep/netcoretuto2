@@ -1,40 +1,47 @@
+---
+import DrawerContent from './DrawerContent.astro';
+---
+
 <style>
     #drawer-toggler:checked + #drawer-host {
         visibility: visible;
-        transform: translateX(0);
-        transition:
-            visibility 0s,
-            transform 0.2s ease-in;
+        transition: visibility 0s;
     }
     #drawer-toggler + #drawer-host {
         visibility: hidden;
-        transform: translateX(-28rem);
-        transition:
-            visibility 0.2s,
-            transform 0.2s ease-out;
+        transition: visibility 0.2s;
+    }
+
+    #drawer-toggler:checked + #drawer-host .my-drawer {
+        transform: translateX(0);
+        transition: transform 0.2s ease-in;
+    }
+    #drawer-toggler + #drawer-host .my-drawer {
+        transform: translateX(-20rem);
+        transition: transform 0.2s ease-out;
     }
 </style>
 
 <!-- this hidden checkbox holds the state open/close of the drawer  -->
-<input id='drawer-toggler' type='checkbox' class='hidden' />
+<input id='drawer-toggler' type='checkbox' checked class='hidden' />
 
 <!-- this "drawer-host" section is a transparent layer overlay the main content to host the drawer -->
 <!-- the drawer host is divided into 2 parts: the left part host the drawer, the right part host a clickable overlay -->
-<section
-    id='drawer-host'
-    class='fixed z-1000 h-full w-full bg-transparent flex flex-row'>
+<section id='drawer-host' class='fixed z-1000 h-full w-full flex flex-row'>
+    <!-- this 50% opacity overlay is used as the background of the drawer-host.
+     When the drawer-host becomes visible, this overlay will be shown and fade the main content first,
+     then the actual "my-drawer" will slowly slide in. We cannot  directly set the opacity of the drawer-host
+     because it would impact the actual "my-drawer"'s opacity  -->
+    <div
+        class='absolute top-0 left-0 h-full w-full opacity-50 bg-base-100 z-10'>
+    </div>
+
     <!-- the left part is the "actual drawer" with a fixed width -->
-    <div class='w-md bg-base-200 opacity-95 my-drawer'>
-        <ul>
-            <li><a href='/'>Home</a></li>
-            <li><a href='/docs'>Documentation</a></li>
-            <li><a href='/components'>Components</a></li>
-            <li><a href='/templates'>Templates</a></li>
-            <li><a href='/blog'>Blog</a></li>
-            <li><a href='/community'>Community</a></li>
-        </ul>
+    <div
+        class='w-xs bg-base-100 opacity-95 shadow-2xl shadow-black my-drawer z-30'>
+        <DrawerContent />
     </div>
     <!-- the right part is a transparent layer covering the space outside the "actual drawer".
          this clickable label allows to close the drawer when clicked -->
-    <label for='drawer-toggler' class='flex-1 bg-transparent'></label>
+    <label for='drawer-toggler' class='flex-1 bg-transparent z-20'></label>
 </section>

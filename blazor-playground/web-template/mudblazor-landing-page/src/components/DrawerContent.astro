@@ -1,0 +1,40 @@
+---
+import { Bell, X } from '@lucide/astro';
+---
+
+<script src='https://unpkg.com/@mahozad/theme-switch'></script>
+<style>
+    theme-switch {
+        /* --background: #888; */
+
+        /*
+   * There is a special property called --theme-switch-icon-color
+   * which you can set, to change the color of the icon (shapes) in the switch.
+   * You can even make the color change with animation (for example, on mouse hover);
+   * see https://gist.github.com/mahozad/a8114b6145cac721f7652aa7b0732cf6
+   */
+        --theme-switch-icon-color: var(--color-base-content);
+    }
+</style>
+<div>
+    <div class='flex flex-row justify-between items-center gap-5 px-6 py-2'>
+        <label for='drawer-toggler' class='btn btn-circle'>
+            <X />
+        </label>
+
+        <div class='flex-1'></div>
+        <button class='btn btn-circle justify-end'>
+            <Bell />
+        </button>
+
+        <theme-switch class='w-8 h-8 btn btn-circle justify-end'></theme-switch>
+    </div>
+    <div>
+        <ul class='flex flex-col gap-5 px-6 py-2'>
+            <li><a>Get Started</a></li>
+            <li><a>Docs</a></li>
+            <li><a>Learn More</a></li>
+            <li><a>Projects</a></li>
+        </ul>
+    </div>
+</div>
