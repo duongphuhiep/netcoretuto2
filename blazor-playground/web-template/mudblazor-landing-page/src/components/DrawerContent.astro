@@ -16,7 +16,7 @@ import { Bell, X } from '@lucide/astro';
         --theme-switch-icon-color: var(--color-base-content);
     }
 </style>
-<div>
+<>
     <div class='flex flex-row justify-between items-center gap-5 px-6 py-2'>
         <label for='drawer-toggler' class='btn btn-circle'>
             <X />
@@ -29,12 +29,10 @@ import { Bell, X } from '@lucide/astro';
 
         <theme-switch class='w-8 h-8 btn btn-circle'></theme-switch>
     </div>
-    <div>
-        <ul class='flex flex-col gap-5 px-6 py-2'>
-            <li><a>Get Started</a></li>
-            <li><a>Docs</a></li>
-            <li><a>Learn More</a></li>
-            <li><a>Projects</a></li>
-        </ul>
-    </div>
-</div>
+    <ul class='menu w-full'>
+        <li><a>Get Started</a></li>
+        <li><a>Docs</a></li>
+        <li><a>Learn More</a></li>
+        <li><a>Projects</a></li>
+    </ul>
+</>
