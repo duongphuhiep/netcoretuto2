@@ -7,6 +7,14 @@ import DrawerContent from './DrawerContent.astro';
 ---
 
 <style>
+    html {
+        --drawer-width: 20rem; /* fixed width for the drawer */
+        --drawer-transition-duration: 0.2s; /* transition duration for the drawer */
+        --drawer-slide-dir: -1;
+    }
+    html[dir='rtl'] {
+        --drawer-slide-dir: 1; /* slide direction is reversed in RTL */
+    }
     /* the drawer host becomes visible immediately (at the first animation frame) when the checkbox is checked
      it will fade the main content with a 50% opacity background */
     #drawer-toggler:checked + #drawer-host {
@@ -17,22 +25,28 @@ import DrawerContent from './DrawerContent.astro';
      so that we can see the drawer sliding out animation */
     #drawer-toggler + #drawer-host {
         visibility: hidden;
-        transition: visibility 0.2s;
+        transition: visibility var(--drawer-transition-duration);
     }
+
     /* the actual drawer slides in from the left when the checkbox is checked */
     #drawer-toggler:checked + #drawer-host .my-drawer {
         transform: translateX(0);
-        transition: transform 0.2s ease-in;
+        transition: transform var(--drawer-transition-duration) ease-in;
     }
     /* the actual drawer slides out to the left when the checkbox is unchecked */
     #drawer-toggler + #drawer-host .my-drawer {
-        transform: translateX(-20rem);
-        transition: transform 0.2s ease-out;
+        transform: translateX(
+            calc(var(--drawer-width) * var(--drawer-slide-dir))
+        );
+        transition: transform var(--drawer-transition-duration) ease-out;
+    }
+    .my-drawer {
+        width: var(--drawer-width); /* fixed width for the drawer */
     }
 </style>
 
 <!-- this hidden checkbox holds the state open/close of the drawer  -->
-<input id='drawer-toggler' type='checkbox' checked class='hidden' />
+<input id='drawer-toggler' type='checkbox' class='hidden' />
 
 <!-- this "drawer-host" section is a transparent layer overlay the main content to host the drawer -->
 <!-- the drawer host contains 2 parts: a "clickable 50% opacity overlay background", and actual "my-drawer" -->
@@ -49,7 +63,7 @@ import DrawerContent from './DrawerContent.astro';
 
     <!-- the actual "my-drawer" has a fixed width -->
     <div
-        class='my-drawer w-xs h-full bg-base-100 opacity-95 shadow-2xl shadow-black z-2000'>
+        class='my-drawer h-full bg-base-100 opacity-95 shadow-2xl shadow-black z-2000'>
         <DrawerContent />
     </div>
 </section>

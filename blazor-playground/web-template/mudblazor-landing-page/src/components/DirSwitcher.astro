@@ -1,0 +1,13 @@
+---
+import { ArrowRightLeft } from '@lucide/astro';
+---
+
+<button class='btn btn-circle' id='dir-switcher'>
+    <ArrowRightLeft />
+</button>
+<script>
+    document.getElementById('dir-switcher')?.addEventListener('click', () => {
+        document.dir = document.dir === 'rtl' ? 'ltr' : 'rtl';
+        console.log('foo');
+    });
+</script>
