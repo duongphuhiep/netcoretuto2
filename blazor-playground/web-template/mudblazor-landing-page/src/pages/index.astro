@@ -7,8 +7,6 @@ import CodesIcon from '../assets/codes-icon.svg';
 import BoxIcon from '../assets/box-icon.svg';
 import CodeSample from '../components/CodeSample.md';
 import CardSample from '../components/CardSample.astro';
-import WorldMap from '../components/WorldMap.astro';
-import Stats from '../components/Stats.astro';
 import Community from '../components/Community.astro';
 import Splitter21 from '../components/Splitter21.astro';
 import Splitter12 from '../components/Splitter12.astro';
@@ -16,30 +14,31 @@ import SkewBand from '../components/SkewBand.astro';
 import Sponsors from '../components/Sponsors.astro';
 import GetStarted from '../components/GetStarted.astro';
 import Links from '../components/Links.astro';
-import Testimonials from '../components/Testimonials.astro';
 import Drawer from '../components/Drawer.astro';
+import GlobalScale from '../components/GlobalScale.astro';
+import UnifiedPlatform from '../components/UnifiedPlatform.astro';
 ---
 
 <Layout>
     <Drawer />
     <!-- main content -->
-    <div>
-        <nav class='flex justify-between items-center px-6 py-2 bg-base-200'>
-            <label for='drawer-toggler' class='btn btn-circle'><Menu /></label>
+    <nav class='flex justify-between items-center px-6 py-2 bg-base-200'>
+        <label for='drawer-toggler' class='btn btn-circle'><Menu /></label>
 
-            <div class='flex items-center'>
-                <div class='w-[40px]'><Logo /></div>
-                <div
-                    class='tracking-[0.2rem] font-normal ms-3 text-2xl text-primary'>
-                    MudBlazor
-                </div>
+        <div class='flex items-center'>
+            <div class='w-[40px]'><Logo /></div>
+            <div
+                class='tracking-[0.2rem] font-normal ms-3 text-2xl text-primary'>
+                MudBlazor
             </div>
-            <Search />
-        </nav>
+        </div>
+        <Search />
+    </nav>
 
-        <!-- start hero section with darker background -->
-        <section class='bg-base-200'>
-            <!-- hero section -->
+    <!-- start hero section with darker background -->
+    <section class='bg-base-200'>
+        <!-- hero section -->
+        <div class='max-w-6xl mx-auto'>
             <div class='pt-4 mx-6'>
                 <div class='text-[clamp(2rem,8vw,4rem)] font-bold mt-20'>
                     <h1>The Blazor</h1>
@@ -70,179 +69,132 @@ import Drawer from '../components/Drawer.astro';
                     >
                 </div>
             </div>
-            <!-- end hero section -->
+        </div>
+        <!-- end hero section -->
 
-            <SkewBand />
+        <SkewBand />
 
-            <!-- start sponsor section with darker background -->
-            <div class='mx-6 pb-30'>
-                <Sponsors />
-            </div>
-        </section>
-        <!-- end darker background -->
+        <!-- start sponsor section with darker background -->
+        <div class='max-w-6xl mx-auto pb-30'>
+            <Sponsors />
+        </div>
+    </section>
+    <!-- end darker background -->
 
-        <!-- start testimonials section group with default background -->
-        <section class='pt-30 pb-10 mx-6'>
-            <div class='flex flex-col gap-5 mx-auto max-w-5xl'>
-                <div class='text-primary font-bold'>Unified platform</div>
-                <div class='text-2xl font-bold'>
-                    MudBlazor is more than a library
-                </div>
-                <div class='flex flex-col gap-8 md:flex-row'>
-                    <div class='landing-text landing-text-c50 md:flex-1'>
-                        We bring together everything that's required to build
-                        amazing Blazor applications that scale from desktop to
-                        mobile. Apart from the library itself we also provide
-                        templates, a learning platform, theme manager, demo and
-                        example projects as well as an online code editor
-                        integrated withcode-sample our documentation and issue
-                        tracking. With more to come.
+    <!-- start testimonials section group with default background -->
+    <section class='pt-30 pb-10'>
+        <div class='mx-auto max-w-6xl'>
+            <UnifiedPlatform />
+        </div>
+    </section>
+
+    <Splitter21 />
+
+    <!-- start code-sample section group with darker background -->
+    <section class='bg-base-200 py-30'>
+        <div class='flex gap-5 flex-row flex-wrap mx-auto max-w-6xl'>
+            <div class='flex-1 min-w-sm mx-6'>
+                <div class='flex flex-col gap-5'>
+                    <div class='text-primary font-bold'>
+                        Designed for developers
                     </div>
-                    <div class='landing-text landing-text-c50 md:flex-1'>
-                        We help companies build amazing apps in record time and
-                        let them focus on their business instead of buttons,
-                        MudBlazor is battle-tested and one of the
-                        fastest-improving platforms, and much more.
+                    <div class='text-2xl font-bold'>
+                        Developers love to work with MudBlazor
                     </div>
-                </div>
-            </div>
-            <div class='my-20 text-[clamp(1rem,6vw,3rem)] text-center'>
-                “Never had such a good time making a site“
-            </div>
-
-            <!-- testimonials -->
-            <section>
-                <Testimonials />
-            </section>
-        </section>
-
-        <Splitter21 />
-
-        <!-- start code-sample section group with darker background -->
-        <section class='bg-base-200 py-30'>
-            <div class='flex gap-5 flex-row flex-wrap mx-auto max-w-7xl'>
-                <div class='flex-1 min-w-sm mx-6'>
-                    <div class='flex flex-col gap-5'>
-                        <div class='text-primary font-bold'>
-                            Designed for developers
-                        </div>
-                        <div class='text-2xl font-bold'>
-                            Developers love to work with MudBlazor
-                        </div>
-                        <div class='landing-text landing-text-c50'>
-                            We started MudBlazor with a simple promise, to
-                            empower the developer and fully take advantage of
-                            what Blazor offers. With MudBlazor you can create
-                            exceptional apps without the burden of mastering
-                            HTML, CSS and JS and focus your skillset on C#.
-                        </div>
-                    </div>
-                    <div
-                        class='flex flex-col gap-8 md:flex-row mt-10 landing-text-small'>
-                        <div class='md:flex-1 flex flex-col gap-5'>
-                            <div>
-                                <CodesIcon
-                                    class='fill-current'
-                                    width='36'
-                                    height='36'
-                                />
-                            </div>
-                            <h3>TryMudBlazor</h3>
-                            <div class='landing-text-c50'>
-                                Use the full power of Blazor directly in your
-                                browser with TryMudBlazor.<br />
-                                Fully-fledged editor with IntelliSense, multiple
-                                files and ability to save your code.
-                            </div>
-                            <div class='link link-primary'>Test online</div>
-                        </div>
-                        <div class='md:flex-1 flex flex-col gap-5'>
-                            <div>
-                                <BoxIcon
-                                    class='fill-current'
-                                    width='36'
-                                    height='36'
-                                />
-                            </div>
-                            <h3>Templates</h3>
-                            <div class='landing-text-c50'>
-                                We provide all the default Blazor templates but
-                                pre configured with MudBlazor to help you get
-                                started faster.
-                            </div>
-                            <div class='link link-primary'>
-                                Explore templates
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class='flex-1 min-w-sm mx-6'>
-                    <!-- code sample -->
-                    <div class='bg-[#24292e] w-full p-5 rounded'>
-                        <CodeSample />
-                    </div>
-                    <!-- card -->
-                    <div
-                        class='bg-base-100 w-96 shadow-sm ms-[64px] mt-[-48px]'>
-                        <CardSample />
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <Splitter12 />
-
-        <!-- start community section group with default background -->
-        <section class='py-30'>
-            <Community />
-        </section>
-
-        <Splitter21 />
-
-        <!--Start  WorldMap and Stats section in darker background -->
-        <section class='py-30 bg-base-200'>
-            <div class='grid grid-cols-2 mx-6 gap-5'>
-                <div class='col-span-2 md:col-span-1'>
-                    <div class='flex flex-col gap-5'>
-                        <div class='text-primary font-bold'>Global scale</div>
-                        <div class='text-2xl font-bold'>
-                            MudBlazor is growing quickly
-                        </div>
-                        <div class='landing-text landing-text-c50'>
-                            We are growing every day, developers from all over
-                            the world are using MudBlazor and are engaged with
-                            the community. We are dedicated to improving every
-                            aspect of MudBlazor to be your number one choice
-                            when looking for a Blazor component library. Join us
-                            and be part of the library’s success!
-                        </div>
+                    <div class='landing-text landing-text-c50'>
+                        We started MudBlazor with a simple promise, to empower
+                        the developer and fully take advantage of what Blazor
+                        offers. With MudBlazor you can create exceptional apps
+                        without the burden of mastering HTML, CSS and JS and
+                        focus your skillset on C#.
                     </div>
                 </div>
                 <div
-                    class='row-start-3 col-start-1 col-span-2 md:row-start-1 md:col-start-2 md:col-span-1 overflow-clip'>
-                    <WorldMap />
-                </div>
-                <div class='row-start-2 col-start-1 col-span-2'>
-                    <Stats />
+                    class='flex flex-col gap-8 md:flex-row mt-10 landing-text-small'>
+                    <div class='md:flex-1 flex flex-col gap-5'>
+                        <div>
+                            <CodesIcon
+                                class='fill-current'
+                                width='36'
+                                height='36'
+                            />
+                        </div>
+                        <h3>TryMudBlazor</h3>
+                        <div class='landing-text-c50'>
+                            Use the full power of Blazor directly in your
+                            browser with TryMudBlazor.<br />
+                            Fully-fledged editor with IntelliSense, multiple files
+                            and ability to save your code.
+                        </div>
+                        <div class='link link-primary'>Test online</div>
+                    </div>
+                    <div class='md:flex-1 flex flex-col gap-5'>
+                        <div>
+                            <BoxIcon
+                                class='fill-current'
+                                width='36'
+                                height='36'
+                            />
+                        </div>
+                        <h3>Templates</h3>
+                        <div class='landing-text-c50'>
+                            We provide all the default Blazor templates but pre
+                            configured with MudBlazor to help you get started
+                            faster.
+                        </div>
+                        <div class='link link-primary'>Explore templates</div>
+                    </div>
                 </div>
             </div>
-        </section>
+            <div class='flex-1 min-w-sm mx-6'>
+                <!-- code sample -->
+                <div class='bg-[#24292e] w-full p-5 rounded'>
+                    <CodeSample />
+                </div>
+                <!-- card -->
+                <div class='bg-base-100 w-96 shadow-sm ms-[64px] mt-[-48px]'>
+                    <CardSample />
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <!-- Get Started section -->
-        <section class='py-30 bg-base-100 mx-6'>
+    <Splitter12 />
+
+    <!-- start community section group with default background -->
+    <section class='py-30'>
+        <div class='max-w-6xl mx-auto'>
+            <Community />
+        </div>
+    </section>
+
+    <Splitter21 />
+
+    <!--Start  WorldMap and Stats section in darker background -->
+    <section class='py-30 bg-base-200'>
+        <div class='max-w-6xl mx-auto'>
+            <GlobalScale />
+        </div>
+    </section>
+
+    <!-- Get Started section -->
+    <section class='py-30 bg-base-100 mx-6'>
+        <div class='max-w-6xl mx-auto'>
             <GetStarted />
-        </section>
+        </div>
+    </section>
 
-        <Splitter21 />
+    <Splitter21 />
 
-        <section class='py-30 bg-base-200'>
+    <section class='py-30 bg-base-200'>
+        <div class='max-w-6xl mx-auto'>
             <Links />
-        </section>
+        </div>
+    </section>
 
-        <section class='pb-10 bg-base-200'>
-            <div class='landing-text-small landing-text-c50 mx-6'>
-                Copyright © 2020-2025 MudBlazor
-            </div>
-        </section>
-    </div>
+    <section class='pb-10 bg-base-200'>
+        <div class='landing-text-small landing-text-c50 mx-6'>
+            Copyright © 2020-2025 MudBlazor
+        </div>
+    </section>
 </Layout>
