@@ -2,8 +2,6 @@
 // Here I used my own custom drawer implementation similar to the one in the DaisyUI library.
 // Unlike DaisyUI Drawer, my implementation is more "portable" because we can place this component anywhere in the DOM.
 // while the DaisyUI's Drawer implementation requires to wrap the whole application.
-
-import DrawerContent from './DrawerContent.astro';
 ---
 
 <style>
@@ -64,6 +62,6 @@ import DrawerContent from './DrawerContent.astro';
     <!-- the actual "my-drawer" has a fixed width -->
     <div
         class='my-drawer h-full bg-base-100 opacity-95 shadow-2xl shadow-black z-2000'>
-        <DrawerContent />
+        <slot />
     </div>
 </section>

@@ -1,20 +1,20 @@
 {
-  "name": "mudblazor-landing-page",
-  "type": "module",
-  "version": "0.0.1",
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "@lucide/astro": "^0.515.0",
-    "@tailwindcss/vite": "^4.1.10",
-    "astro": "^5.9.3",
-    "tailwindcss": "^4.1.10"
-  },
-  "devDependencies": {
-    "daisyui": "^5.0.43"
-  }
+    "name": "mudblazor-landing-page",
+    "type": "module",
+    "version": "0.0.1",
+    "scripts": {
+        "dev": "astro dev",
+        "build": "astro build",
+        "preview": "astro preview",
+        "astro": "astro"
+    },
+    "dependencies": {
+        "@lucide/astro": "0.523.0",
+        "@tailwindcss/vite": "4.1.10",
+        "astro": "5.10.1",
+        "tailwindcss": "4.1.10"
+    },
+    "devDependencies": {
+        "daisyui": "5.0.43"
+    }
 }

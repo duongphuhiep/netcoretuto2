@@ -1,8 +1,10 @@
 ---
-import MockupApp from './MockupApp.astro';
+import SampleAppScaled from './SampleAppScaled.astro';
 ---
 
 <div
-    class='mockup-window bg-base-300 border-base-300 border-6 w-[975px] h-[650px] shadow-2xl shadow-black'>
-    <MockupApp />
+    class='mockup-window bg-base-300 border-primary border-6 shadow-2xl shadow-black'>
+    <div class='w-[975px] h-[650px]'>
+        <SampleAppScaled />
+    </div>
 </div>

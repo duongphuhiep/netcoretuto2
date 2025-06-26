@@ -17,10 +17,15 @@ import Links from '../components/Links.astro';
 import Drawer from '../components/Drawer.astro';
 import GlobalScale from '../components/GlobalScale.astro';
 import UnifiedPlatform from '../components/UnifiedPlatform.astro';
+import DrawerContent from '../components/DrawerContent.astro';
+import MockupPhone from '../components/MockupPhone.astro';
+import MockupTablet from '../components/MockupTablet.astro';
 ---
 
 <Layout>
-    <Drawer />
+    <Drawer>
+        <DrawerContent />
+    </Drawer>
     <!-- main content -->
     <nav class='flex justify-between items-center px-6 py-2 bg-base-200'>
         <label for='drawer-toggler' class='btn btn-circle'><Menu /></label>
@@ -36,37 +41,53 @@ import UnifiedPlatform from '../components/UnifiedPlatform.astro';
     </nav>
 
     <!-- start hero section with darker background -->
-    <section class='bg-base-200'>
+    <section class='bg-base-200 overflow-clip'>
         <!-- hero section -->
         <div class='max-w-6xl mx-auto'>
-            <div class='pt-4 mx-6'>
-                <div class='text-[clamp(2rem,8vw,4rem)] font-bold mt-20'>
-                    <h1>The Blazor</h1>
-                    <span
-                        class='bg-[linear-gradient(82deg,rgb(89,74,226)_0%,rgb(255,102,153)_100%)] bg-clip-text text-transparent'
-                        >Component</span
-                    >
-                    Library
-                    <h1>You always wanted</h1>
+            <div class='pt-4 mx-6 flex flex-row'>
+                <div class='lg:max-w-[60%]'>
+                    <div
+                        class='text-[clamp(2rem,8vw,4rem)] font-bold mt-20 leading-tight'>
+                        <h1>The Blazor</h1>
+                        <span
+                            class='bg-[linear-gradient(82deg,rgb(89,74,226)_0%,rgb(255,102,153)_100%)] bg-clip-text text-transparent'
+                            >Component</span
+                        >
+                        Library
+                        <h1>You always wanted</h1>
+                    </div>
+                    <p class='my-8 landing-text landing-text-c50'>
+                        With millions of downloads, from hobby developers to
+                        large enterprises, MudBlazor enables you to rapidly
+                        build amazing web applications without leaving your
+                        beloved C# language and toolchain.
+                    </p>
+                    <div>
+                        <button
+                            class='btn btn-primary text-[clamp(0.75rem,4vw,1rem)]'
+                            >Get started</button
+                        >
+                        <button
+                            class='btn btn-outline mx-3 text-[clamp(0.50rem,4vw,1rem)]'
+                            ><div>
+                                <GithubLogo width='20px' class='fill-current' />
+                            </div>
+                            Star on GitHub</button
+                        >
+                    </div>
                 </div>
-                <p class='my-8 landing-text landing-text-c50'>
-                    With millions of downloads, from hobby developers to large
-                    enterprises, MudBlazor enables you to rapidly build amazing
-                    web applications without leaving your beloved C# language
-                    and toolchain.
-                </p>
-                <div>
-                    <button
-                        class='btn btn-primary text-[clamp(0.75rem,4vw,1rem)]'
-                        >Get started</button
-                    >
-                    <button
-                        class='btn btn-outline mx-3 text-[clamp(0.50rem,4vw,1rem)]'
-                        ><div>
-                            <GithubLogo width='20px' class='fill-current' />
-                        </div>
-                        Star on GitHub</button
-                    >
+                <!-- sample app -->
+                <div class='hidden lg:block relative'>
+                    <div
+                        class='absolute z-10'
+                        style='inset-inline-start: 8rem; inset-block-start: 5rem;'>
+                        <MockupTablet />
+                    </div>
+                    <div
+                        class='absolute z-20'
+                        style='inset-block-start: 14rem;'>
+                        <MockupPhone />
+                    </div>
                 </div>
             </div>
         </div>
@@ -91,7 +112,7 @@ import UnifiedPlatform from '../components/UnifiedPlatform.astro';
     <Splitter21 />
 
     <!-- start code-sample section group with darker background -->
-    <section class='bg-base-200 py-30'>
+    <section class='bg-base-200 py-30 overflow-clip'>
         <div class='flex gap-5 flex-row flex-wrap mx-auto max-w-6xl'>
             <div class='flex-1 min-w-sm mx-6'>
                 <div class='flex flex-col gap-5'>
