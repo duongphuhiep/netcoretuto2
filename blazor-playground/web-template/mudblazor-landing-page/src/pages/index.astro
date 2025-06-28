@@ -1,7 +1,4 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { Menu, Search } from '@lucide/astro';
-import Logo from '../assets/mudblazor.svg';
 import GithubLogo from '../assets/github-mark.svg';
 import CodesIcon from '../assets/codes-icon.svg';
 import BoxIcon from '../assets/box-icon.svg';
@@ -14,32 +11,14 @@ import SkewBand from '../components/SkewBand.astro';
 import Sponsors from '../components/Sponsors.astro';
 import GetStarted from '../components/GetStarted.astro';
 import Links from '../components/Links.astro';
-import Drawer from '../components/Drawer.astro';
 import GlobalScale from '../components/GlobalScale.astro';
 import UnifiedPlatform from '../components/UnifiedPlatform.astro';
-import DrawerContent from '../components/DrawerContent.astro';
 import MockupPhone from '../components/MockupPhone.astro';
 import MockupTablet from '../components/MockupTablet.astro';
+import LayoutNavBar from '../layouts/LayoutNavBar.astro';
 ---
 
-<Layout>
-    <Drawer>
-        <DrawerContent />
-    </Drawer>
-    <!-- main content -->
-    <nav class='flex justify-between items-center px-6 py-2 bg-base-200'>
-        <label for='drawer-toggler' class='btn btn-circle'><Menu /></label>
-
-        <div class='flex items-center'>
-            <div class='w-[40px]'><Logo /></div>
-            <div
-                class='tracking-[0.2rem] font-normal ms-3 text-2xl text-primary'>
-                MudBlazor
-            </div>
-        </div>
-        <Search />
-    </nav>
-
+<LayoutNavBar>
     <!-- start hero section with darker background -->
     <section class='bg-base-200 overflow-clip'>
         <!-- hero section -->
@@ -218,4 +197,4 @@ import MockupTablet from '../components/MockupTablet.astro';
             Copyright © 2020-2025 MudBlazor
         </div>
     </section>
-</Layout>
+</LayoutNavBar>
