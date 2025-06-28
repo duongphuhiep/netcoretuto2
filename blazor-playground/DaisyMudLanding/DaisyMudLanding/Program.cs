@@ -1,11 +1,7 @@
-using MudBlazor.Services;
-using MudMudLanding.Client.Pages;
-using MudMudLanding.Components;
+using DaisyMudLanding.Client.Pages;
+using DaisyMudLanding.Components;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add MudBlazor services
-builder.Services.AddMudServices();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -35,6 +31,6 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(MudMudLanding.Client._Imports).Assembly);
+    .AddAdditionalAssemblies(typeof(DaisyMudLanding.Client._Imports).Assembly);
 
 app.Run();
