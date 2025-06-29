@@ -1,0 +1,19 @@
+@using DaisyMudLanding.Components.Libs.Svg
+
+<WorldMapImage class="w-[max(30rem,100%)] fill-base-content" />
+
+<script>
+    [
+        "United_States",
+        "United_Kingdom",
+        "Sweden",
+        "Germany",
+        "Egypt",
+        "Brazil",
+        "South_Africa",
+        "Russia",
+    ].forEach((country) => {
+        const c = document.getElementById(country);
+        c?.classList.add("fill-primary");
+    });
+</script>

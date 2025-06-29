@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DaisyMudLanding.Client\DaisyMudLanding.Client.csproj" />
+    <PackageReference Include="InfiniLore.Lucide" Version="0.30.516" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.6" />
   </ItemGroup>
 

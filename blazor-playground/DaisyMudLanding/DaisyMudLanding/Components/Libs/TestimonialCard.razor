@@ -1,0 +1,21 @@
+
+<div class="bg-base-300 rounded p-6 max-w-md">
+    <div class="grid grid-cols-[32px_1fr] gap-5!">
+        <div class="max-h-[32px] overflow-clip">
+            <span class="text-5xl landing-text-c50">❞</span>
+        </div>
+        <div>
+            <div>@Person</div>
+            <div>@Company</div>
+        </div>
+        <div class="col-span-2 landing-text-small landing-text-c50">
+            @ChildContent
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Person { get; set; } = "";
+    [Parameter] public string Company { get; set; } = "";
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

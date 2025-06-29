@@ -3,6 +3,7 @@ import GithubLogo from '../assets/github-mark.svg';
 import CodesIcon from '../assets/codes-icon.svg';
 import BoxIcon from '../assets/box-icon.svg';
 import CodeSample from '../components/CodeSample.md';
+import CodeSamplePrism from '../components/CodeSamplePrism.astro';
 import CardSample from '../components/CardSample.astro';
 import Community from '../components/Community.astro';
 import Splitter21 from '../components/Splitter21.astro';
@@ -148,8 +149,8 @@ import LayoutNavBar from '../layouts/LayoutNavBar.astro';
             </div>
             <div class='flex-1 min-w-sm mx-6'>
                 <!-- code sample -->
-                <div class='bg-[#24292e] w-full p-5 rounded'>
-                    <CodeSample />
+                <div class='w-full p-5 rounded'>
+                    <CodeSamplePrism />
                 </div>
                 <!-- card -->
                 <div class='bg-base-100 w-96 shadow-sm ms-[64px] mt-[-48px]'>
