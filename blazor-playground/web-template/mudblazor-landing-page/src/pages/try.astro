@@ -1,0 +1,25 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<style is:global>
+    .width0 {
+        display: inline-block;
+        width: 0rem;
+        overflow: hidden;
+    }
+</style>
+
+<Layout>
+    <div id='d1'></div>
+    <div id='d2'>
+        <span class='width0'>Lorem ipsum dolor sit amet</span>
+    </div>
+</Layout>
+
+<script>
+    window.addEventListener('load', () => {
+        const d1 = document.getElementById('d1') as HTMLElement;
+        d1.innerHTML = `<span class='width0'>Lorem ipsum dolor sit amet</span>`;
+    });
+</script>
