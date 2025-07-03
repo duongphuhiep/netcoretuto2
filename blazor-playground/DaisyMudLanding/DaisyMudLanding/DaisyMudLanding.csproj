@@ -12,6 +12,27 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Components\Libs\CodeSample.razor.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="Components\Libs\CardSample.razor.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="Components\Libs\ThemeSwitcher.razor.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="Components\Libs\Links.razor.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="Components\Libs\GetStarted.razor.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="Components\Libs\SampleAppScaled.razor.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
 
     <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
       <Exec Command="bash &quot;../prebuild.sh&quot;" />
