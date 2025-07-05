@@ -8,7 +8,7 @@
             MudBlazor
         </div>
 
-        <ul tabindex="0" class="menu menu-horizontal">
+        <ul tabindex="0" class="menu menu-horizontal ms-3 gap-3">
             <li><a>Get Started</a></li>
             <li><a>Docs</a></li>
             <li><a>Learn More</a></li>
@@ -25,36 +25,30 @@
     </div>
 
     <div class="navbar-end">
-        <ul class="menu menu-horizontal">
-            <li>
-                <a class="tooltip tooltip-bottom" data-tip="Search">
-                    <LiSearch />
-                </a>
-            </li>
-            <li>
-                <a class="tooltip tooltip-bottom" data-tip="Notifications">
-                    <LiBell />
-                </a>
-            </li>
-            <li>
+        <div class="menu menu-horizontal gap-6">
+            <div>
+                <SearchButton />
+            </div>
+            <NotificationBell />
+            <div>
                 <a
                     class="tooltip tooltip-bottom"
                     data-tip="Switch Text direction">
                     <DirSwitcher />
                 </a>
-            </li>
-            <li>
+            </div>
+            <div>
                 <a
                     class="tooltip tooltip-bottom"
                     data-tip="Switch Dark/Light theme">
                     <ThemeSwitcher />
                 </a>
-            </li>
-            <li>
+            </div>
+            <div>
                 <a class="tooltip tooltip-bottom" data-tip="Github">
-                    <GithubMark class="w-[24px] fill-current" />
+                    <GithubLogo width="24px" class="fill-current" />
                 </a>
-            </li>
-        </ul>
+            </div>
+        </div>
     </div>
 </nav>
