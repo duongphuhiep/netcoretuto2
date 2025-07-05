@@ -1,9 +1,10 @@
 ---
 import Logo from '../assets/mudblazor.svg';
-import { Bell, Search } from '@lucide/astro';
 import DirSwitcher from './DirSwitcher.astro';
 import ThemeSwitcher from './ThemeSwitcher.astro';
 import GithubLogo from '../assets/github-mark.svg';
+import NotificationBell from './NotificationBell.astro';
+import SearchButton from './SearchButton.astro';
 ---
 
 <nav class='navbar px-6 py-2 bg-base-200 w-full hidden lg:flex'>
@@ -13,7 +14,7 @@ import GithubLogo from '../assets/github-mark.svg';
             MudBlazor
         </div>
 
-        <ul tabindex='0' class='menu menu-horizontal'>
+        <ul tabindex='0' class='menu menu-horizontal ms-3 gap-3'>
             <li><a>Get Started</a></li>
             <li><a>Docs</a></li>
             <li><a>Learn More</a></li>
@@ -30,36 +31,30 @@ import GithubLogo from '../assets/github-mark.svg';
     </div>
 
     <div class='navbar-end'>
-        <ul class='menu menu-horizontal'>
-            <li>
-                <a class='tooltip tooltip-bottom' data-tip='Search'>
-                    <Search />
-                </a>
-            </li>
-            <li>
-                <a class='tooltip tooltip-bottom' data-tip='Notifications'>
-                    <Bell />
-                </a>
-            </li>
-            <li>
+        <div class='menu menu-horizontal gap-6'>
+            <div>
+                <SearchButton />
+            </div>
+            <NotificationBell />
+            <div>
                 <a
                     class='tooltip tooltip-bottom'
                     data-tip='Switch Text direction'>
                     <DirSwitcher />
                 </a>
-            </li>
-            <li>
+            </div>
+            <div>
                 <a
                     class='tooltip tooltip-bottom'
                     data-tip='Switch Dark/Light theme'>
                     <ThemeSwitcher />
                 </a>
-            </li>
-            <li>
+            </div>
+            <div>
                 <a class='tooltip tooltip-bottom' data-tip='Github'>
                     <GithubLogo width='24px' class='fill-current' />
                 </a>
-            </li>
-        </ul>
+            </div>
+        </div>
     </div>
 </nav>

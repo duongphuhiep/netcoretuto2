@@ -1,7 +1,8 @@
 ---
-import { Bell, X } from '@lucide/astro';
+import { X } from '@lucide/astro';
 import DirSwitcher from './DirSwitcher.astro';
 import ThemeSwitcher from './ThemeSwitcher.astro';
+import NotificationBell from './NotificationBell.astro';
 ---
 
 <div class='bg-base-100 h-full'>
@@ -12,9 +13,7 @@ import ThemeSwitcher from './ThemeSwitcher.astro';
             </label>
         </div>
         <div class='flex-1'></div>
-        <button class='tooltip tooltip-bottom' data-tip='Notifications'>
-            <Bell />
-        </button>
+        <NotificationBell />
         <div class='tooltip tooltip-bottom' data-tip='Switch Text direction'>
             <DirSwitcher />
         </div>

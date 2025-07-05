@@ -1,10 +1,22 @@
 ---
-import ShowMore from '../components/ShowMore.astro';
+import NotificationBell from '../components/NotificationBell2.astro';
 import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout>
-    <ShowMore>
-        <div class='h-[70rem] bg-accent'></div>
-    </ShowMore>
+    <div class='p-20'>
+        <div
+            class='w-64 h-32 bg-gray-800 rounded-lg p-4 text-center text-white
+            border-4 border-primary
+            shadow-lg shadow-primary/50'>
+            <p class='py-4'>Not a true "glow", but uses existing utilities!</p>
+        </div>
+
+        <div
+            class='w-64 h-32 bg-gray-800 rounded-lg p-4 text-center text-white mt-8
+            ring-4 ring-purple-500 ring-offset-2 ring-offset-gray-800'>
+            <p class='py-4'>Using 'ring' utilities (a solid outline)</p>
+        </div>
+        <NotificationBell />
+    </div>
 </Layout>

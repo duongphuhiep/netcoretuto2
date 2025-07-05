@@ -16,6 +16,7 @@ import UnifiedPlatform from '../components/UnifiedPlatform.astro';
 import MockupPhone from '../components/MockupPhone.astro';
 import MockupTablet from '../components/MockupTablet.astro';
 import LayoutNavBar from '../layouts/LayoutNavBar.astro';
+import SearchDialog from '../components/SearchDialog.astro';
 ---
 
 <LayoutNavBar>
@@ -57,7 +58,7 @@ import LayoutNavBar from '../layouts/LayoutNavBar.astro';
                 </div>
                 <!-- sample app -->
                 <div class='hidden lg:block relative'>
-                    <div class='absolute z-10' style='inset-inline-start: 8rem'>
+                    <div class='absolute z-10' style='inset-inline-start: 6rem'>
                         <MockupTablet />
                     </div>
                     <div
@@ -195,4 +196,5 @@ import LayoutNavBar from '../layouts/LayoutNavBar.astro';
             Copyright © 2020-2025 MudBlazor
         </div>
     </section>
+    <SearchDialog></SearchDialog>
 </LayoutNavBar>
