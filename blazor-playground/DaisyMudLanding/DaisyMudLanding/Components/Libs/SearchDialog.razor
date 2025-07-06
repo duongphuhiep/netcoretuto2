@@ -1,47 +1,40 @@
 <dialog
-    id="my_modal_5"
+    @ref="searchDialog"
     class="modal modal-top scroll-0 [scrollbar-gutter:stable_both-edges]">
     <div class="modal-box max-w-md mx-auto">
         <label class="input input-primary input-lg w-full">
-            <Search />
+            <LiSearch/>
             <input
                 type="search"
                 required
                 placeholder="Search"
-                id="searchInput"
+                @ref="searchInput"
+                value="@currentSearchTerm"
+                @oninput="OnInputAsync"
             />
         </label>
-        <div class="max-h-80 overflow-y-scroll list">
-            <a href="google.com" class="list-row hover:bg-base-200">
-                <div class="landing-text-small">Installation</div>
-                <div class="landing-text-c50 list-col-wrap text-xs">
-                    Lorem ipsum dolor sit amet consectetur adipisicing edivt.
-                </div>
-            </a>
-            <a href="google.com" class="list-row hover:bg-base-200">
-                <div class="landing-text-small">Wireframes</div>
-                <div class="landing-text-c50 list-col-wrap text-xs">
-                    Amet deserunt nostrud do moldivt consequat proident ipsum
-                    magna incididunt.
-                </div>
-            </a>
-            <a href="google.com" class="list-row hover:bg-base-200">
-                <div class="landing-text-small">Table</div>
-                <div class="landing-text-c50 list-col-wrap text-xs">
-                    Sit sit excepteur aute culpa nulla incididunt fugiat dolore
-                    nisi et consectetur labore fugiat commodo.
-                </div>
-            </a>
-            <a href="google.com" class="list-row hover:bg-base-200">
-                <div class="landing-text-small">Grid</div>
-                <div class="landing-text-c50 list-col-wrap text-xs">
-                    Incididunt commodo pariatur excepteur consequat id. Lorem
-                    ipsum dolor sit amet consectetur adipisicing edivt. Esse
-                    molestias soluta quisquam nam labore odio tempore numquam
-                    repellat quod, sed, ipsa cum dolorum. Dicta optio simidivque
-                    obcaecati quaerat deleniti divbero?
-                </div>
-            </a>
+        <div class="max-h-79 overflow-y-scroll list">
+            @if (foundItems is null)
+            {
+                <a class="list-row hover:bg-base-200 skeleton text-transparent">
+                    <div class="landing-text-small">Lorem</div>
+                    <div class="landing-text-c50 list-col-wrap text-xs skeleton text-transparent">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    </div>
+                </a>
+            }
+            else
+            {
+                @foreach (var item in foundItems)
+                {
+                    <a href="@item.Url" class="list-row hover:bg-base-200">
+                        <div class="landing-text-small">@item.Title</div>
+                        <div class="landing-text-c50 list-col-wrap text-xs">
+                            @item.Description
+                        </div>
+                    </a>
+                }
+            }
         </div>
         <div class="opacity-20 text-xs mt-2 float-end">
             Press ESC key or click outside to close
@@ -51,3 +44,143 @@
         <button></button>
     </form>
 </dialog>
+
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+@code
+{
+    [Parameter] public int DebounceDelayMs { get; set; } = 500; // Default debounce delay
+    private string currentSearchTerm;
+    private IJSObjectReference? jsModule;
+    private ElementReference? searchDialog;
+    private ElementReference? searchInput;
+    private FoundItem[]? foundItems { get; set; }
+
+    // CancellationTokenSource to manage cancelling previous search requests
+    private CancellationTokenSource? _debounceCancellationTokenSource;
+
+    private async Task OnInputAsync(ChangeEventArgs e)
+    {
+        var newSearchTerm = e.Value?.ToString() ?? string.Empty;
+        if (currentSearchTerm == newSearchTerm) return;
+
+        foundItems = null;
+        currentSearchTerm = newSearchTerm;
+
+        // Cancel any pending debounced search requests
+        _debounceCancellationTokenSource?.Cancel();
+        _debounceCancellationTokenSource?.Dispose(); // Dispose the old token source
+        _debounceCancellationTokenSource = new CancellationTokenSource();
+
+        var currentToken = _debounceCancellationTokenSource.Token;
+        try
+        {
+            // Wait for the debounce delay
+            await Task.Delay(DebounceDelayMs, currentToken);
+
+            // If the token hasn't been cancelled (meaning no new input during the delay)
+            if (!currentToken.IsCancellationRequested)
+            {
+                // Perform the search
+                Console.WriteLine($"Debounced search triggered for: '{currentSearchTerm}' (C# only)");
+                foundItems = await PerformSearch(currentSearchTerm, currentToken); // Notify the parent component
+            }
+        }
+        catch (TaskCanceledException)
+        {
+            // This exception is expected when a new input comes in before the delay is over.
+            // No action needed here, just gracefully catch it.
+            Console.WriteLine($"Debounce cancelled for: '{currentSearchTerm}'");
+        }
+        finally
+        {
+            // Optionally, dispose the token source if it's no longer needed after a successful debounce
+            // or if it was cancelled. This helps manage resources.
+            if (_debounceCancellationTokenSource?.Token == currentToken)
+            {
+                _debounceCancellationTokenSource?.Dispose();
+                _debounceCancellationTokenSource = null;
+            }
+        }
+    }
+
+    private async ValueTask<FoundItem[]> PerformSearch(string searchTerm, CancellationToken cancellationToken)
+    {
+        await Task.Delay(2000, cancellationToken);
+        return
+        [
+            new FoundItem
+            {
+                Title = "From Sever " + Guid.NewGuid(),
+                Description = Guid.NewGuid().ToString(),
+                Url = "/"
+            },
+            new FoundItem
+            {
+                Title = "Installation",
+                Description = "Lorem ipsum dolor sit amet consectetur adipisicing edivt.",
+                Url = "/"
+            },
+            new FoundItem
+            {
+                Title = "Wireframes",
+                Description = "Amet deserunt nostrud do moldivt consequat proident ipsum magna incididunt.",
+                Url = "/"
+            },
+            new FoundItem
+            {
+                Title = "Table",
+                Description = "Sit sit excepteur aute culpa nulla incididunt fugiat dolore nisi et consectetur labore fugiat commodo.",
+                Url = "/"
+            },
+            new FoundItem
+            {
+                Title = "Grid",
+                Description = " Incididunt commodo pariatur excepteur consequat id. Lorem ipsum dolor sit amet consectetur adipisicing edivt. Esse molestias soluta quisquam nam labore odio tempore numquam repellat quod, sed, ipsa cum dolorum. Dicta optio simidivque obcaecati quaerat deleniti divbero?",
+                Url = "/"
+            }
+        ];
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            jsModule = await JS.InvokeAsync<IJSObjectReference>("import",
+                "./Components/Libs/SearchDialog.razor.js");
+        }
+    }
+
+    public async Task ShowModalAsync(string? elementToFocusId = null)
+    {
+        if (searchDialog is not null)
+        {
+            await jsModule.InvokeVoidAsync("showModal", searchDialog);
+        }
+
+        if (searchInput is not null)
+        {
+            await jsModule.InvokeVoidAsync("focus", searchInput, 100);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (jsModule is not null)
+        {
+            try
+            {
+                await jsModule.DisposeAsync();
+            }
+            catch (JSDisconnectedException ex)
+            {
+                Console.Error.WriteLine(ex);
+            }
+        }
+
+        _debounceCancellationTokenSource?.Cancel();
+        _debounceCancellationTokenSource?.Dispose();
+    }
+}

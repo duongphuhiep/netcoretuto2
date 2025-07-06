@@ -1,13 +1,33 @@
-function showModal5() {
-    console.info('showModal5 is called');
-    const dialog = document.getElementById('my_modal_5');
-    if (dialog) {
-        const searchInput = document.getElementById('searchInput');
-        dialog.showModal();
-        setTimeout(() => {
-            searchInput.focus();
-        }, 100);
-    } else {
-        console.warn('my_modal_5 dialog not found');
+/**
+ * @param {HTMLDialogElement} element
+ */
+export function showModal(element) {
+    if (!element) {
+        console.warn('unable to showModal on non-exist element');
+        return;
     }
+    console.info('showModal begin');
+    element.showModal();
+    console.info('showModal end');
+}
+
+/**
+ * @param {HTMLElement} element
+ * @param {number|undefined} delay
+ */
+export function focus(element, delay = undefined) {
+    if (!element) {
+        console.warn('unable to focus on non-exist element');
+        return;
+    }
+    console.info('focus begin');
+    if (!delay) {
+        element.focus();
+        console.info('focus end');
+        return;
+    }
+    setTimeout(() => {
+        element.focus();
+        console.info('focus end (delayed)', delay, element);
+    }, delay);
 }

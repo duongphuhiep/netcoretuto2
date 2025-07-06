@@ -90,7 +90,7 @@ import SearchDialog from '../components/SearchDialog.astro';
     <Splitter21 />
 
     <!-- start code-sample section group with darker background -->
-    <section class='bg-base-200 py-30 overflow-clip'>
+    <section class='bg-base-200 py-30 overflow-clip lg:py-10'>
         <div class='flex gap-5 flex-row flex-wrap mx-auto max-w-6xl'>
             <div class='flex-1 min-w-sm mx-6'>
                 <div class='flex flex-col gap-5'>
@@ -161,7 +161,7 @@ import SearchDialog from '../components/SearchDialog.astro';
     <Splitter12 />
 
     <!-- start community section group with default background -->
-    <section class='py-30'>
+    <section class='py-30 lg:py-10'>
         <div class='max-w-6xl mx-auto'>
             <Community />
         </div>
@@ -170,14 +170,14 @@ import SearchDialog from '../components/SearchDialog.astro';
     <Splitter21 />
 
     <!--Start  WorldMap and Stats section in darker background -->
-    <section class='py-30 bg-base-200'>
+    <section class='py-30 bg-base-200 lg:pt-10'>
         <div class='max-w-6xl mx-auto'>
             <GlobalScale />
         </div>
     </section>
 
     <!-- Get Started section -->
-    <section class='py-30 bg-base-100 mx-6'>
+    <section class='py-30 bg-base-100 mx-6 lg:pb-10'>
         <div class='max-w-6xl mx-auto'>
             <GetStarted />
         </div>
@@ -185,7 +185,7 @@ import SearchDialog from '../components/SearchDialog.astro';
 
     <Splitter21 />
 
-    <section class='py-30 bg-base-200'>
+    <section class='py-30 bg-base-200 lg:pt-10'>
         <div class='max-w-6xl mx-auto'>
             <Links />
         </div>
@@ -196,5 +196,5 @@ import SearchDialog from '../components/SearchDialog.astro';
             Copyright © 2020-2025 MudBlazor
         </div>
     </section>
-    <SearchDialog></SearchDialog>
+    <SearchDialog />
 </LayoutNavBar>

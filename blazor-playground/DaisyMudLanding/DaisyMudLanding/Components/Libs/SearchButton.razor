@@ -1,3 +1,21 @@
-<button class="tooltip tooltip-bottom" data-tip="Search" onclick="showModal5()">
-    <LiSearch />
+@rendermode InteractiveServer
+
+<button class="tooltip tooltip-bottom" data-tip="Search" @onclick="showSearchDialog">
+    <LiSearch/>
 </button>
+<SearchDialog @ref="searchDialog"></SearchDialog>
+
+@code {
+    private SearchDialog? searchDialog;
+
+    private async Task showSearchDialog()
+    {
+        if (searchDialog is null)
+        {
+            return;
+        }
+
+        await searchDialog.ShowModalAsync();
+    }
+
+}

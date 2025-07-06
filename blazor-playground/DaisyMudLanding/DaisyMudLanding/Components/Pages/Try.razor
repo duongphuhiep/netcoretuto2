@@ -1,0 +1,23 @@
+@page "/try"
+@rendermode InteractiveServer
+
+<p>
+    <input @bind:event="oninput" @bind:get="inputValue" @bind:set="OnInputAsync"/>
+</p>
+
+<p>
+    <code>inputValue</code>: @inputValue
+</p>
+
+@code {
+    private string? inputValue;
+
+    private async Task OnInputAsync(string value)
+    {
+        await Task.Delay(10);
+        var newValue = value ?? string.Empty;
+
+        inputValue = newValue.Length > 4 ? "Long!" : newValue;
+    }
+
+}

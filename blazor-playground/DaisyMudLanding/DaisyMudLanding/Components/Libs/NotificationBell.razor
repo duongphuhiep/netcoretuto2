@@ -1,3 +1,4 @@
+@attribute [StreamRendering]
 <div class="dropdown dropdown-start lg:dropdown-end">
     <div tabindex="0" role="button" class="indicator">
         <span class="indicator-item status status-info"></span>
@@ -12,30 +13,69 @@
                 Notifications
             </li>
 
-            <a class="list-row hover:bg-base-200 hover:cursor-pointer">
-                <div>
-                    <div>v8: Riding the Momentum of v7</div>
-                    <div class="landing-text-c50">
-                        <span>The MudBlazor Team</span>🔹<span>Jan 19, 2025</span>
-                    </div>
-                </div>
-            </a>
-            <a class="list-row hover:bg-base-200 hover:cursor-pointer">
-                <div>
-                    <div>v7 Is Here!</div>
-                    <div class="landing-text-c50">
-                        <span>The MudBlazor Team</span>🔹<span>Jun 29, 2024</span>
-                    </div>
-                </div>
-            </a>
-            <a class="list-row hover:bg-base-200 hover:cursor-pointer">
-                <div>
-                    <div>MudBlazor is here to stay</div>
-                    <div class="landing-text-c50">
-                        <span>Jonny Larsson</span>🔹<span>Jan 13, 2022</span>
-                    </div>
-                </div>
-            </a>
+            @if (Notifications is null)
+            {
+                @for (var i = 0; i <= 1; i++)
+                {
+                    <a class="list-row hover:bg-base-200 hover:cursor-pointer">
+                        <div>
+                            <div class="skeleton">
+                                <span class="text-transparent">v8: Riding the Momentum of v7</span>
+                            </div>
+                            <div class="skeleton">
+                                <span class="text-transparent">The MudBlazor Team🔹Jan 19, 2025</span>
+                            </div>
+                        </div>
+                    </a>
+                }
+            }
+            else
+            {
+                @foreach (var notif in Notifications)
+                {
+                    <a class="list-row hover:bg-base-200 hover:cursor-pointer">
+                        <div>
+                            <div>@notif.Title</div>
+                            <div class="landing-text-c50">
+                                <span>@notif.Author</span>🔹<span>@notif.Date</span>
+                            </div>
+                        </div>
+                    </a>
+                }
+            }
         </div>
     </div>
 </div>
+
+@code
+{
+    private Notification[]? Notifications { get; set; } = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate database access
+        //await Task.Delay(20000);
+
+        Notifications =
+        [
+            new Notification
+            {
+                Title = "v8: Riding the Momentum of v7",
+                Author = "The MudBlazor Team",
+                Date = "Jan 19, 2025"
+            },
+            new Notification
+            {
+                Title = "v7 Is Here",
+                Author = "The MudBlazor Team",
+                Date = "Jun 29, 2024"
+            },
+            new Notification
+            {
+                Title = "MudBlazor is here to stay",
+                Author = "Jonny Larsson",
+                Date = "Jan 13, 2022"
+            },
+        ];
+    }
+}
