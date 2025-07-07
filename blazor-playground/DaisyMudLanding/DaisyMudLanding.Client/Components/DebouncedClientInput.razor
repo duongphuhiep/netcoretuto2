@@ -6,9 +6,6 @@
        @bind:set="SetValue"
        @bind:event="ondebounceinput"
 />
-@* <p> *@
-@*     @Value *@
-@* </p> *@
 
 @implements IAsyncDisposable
 @inject IJSRuntime Js
@@ -26,7 +23,12 @@
 
     [Parameter] public EventCallback<string> ValueChanged { get; set; }
 
-    [Parameter] public int DebounceIntervalMiliSeconds { get; set; } = 500;
+    /// <summary>
+    ///     This parameter is not reactive. Once the component is rendered for the first time, then
+    ///     changing it won't have any effect.
+    /// </summary>
+    [Parameter]
+    public int DebounceIntervalMiliSeconds { get; set; } = 500;
 
     private string _value = "";
 
@@ -48,7 +50,7 @@
         if (firstRender)
         {
             _jsModule = await Js.InvokeAsync<IJSObjectReference>("import",
-                $"./Components/{nameof(DebouncedInput)}.razor.js");
+                $"./Components/{nameof(DebouncedClientInput)}.razor.js");
             await _jsModule.InvokeVoidAsync("supportDebounceInputEvent", _inputElement, DebounceIntervalMiliSeconds);
         }
 
@@ -76,16 +78,15 @@
 
     public async ValueTask DisposeAsync()
     {
-        if (_jsModule is not null)
+        if (_jsModule is null)
+            return;
+        try
         {
-            try
-            {
-                await _jsModule.DisposeAsync();
-            }
-            catch (JSDisconnectedException ex)
-            {
-                Console.WriteLine(ex);
-            }
+            await _jsModule.DisposeAsync();
+        }
+        catch (JSDisconnectedException ex)
+        {
+            Console.WriteLine(ex);
         }
     }
 
