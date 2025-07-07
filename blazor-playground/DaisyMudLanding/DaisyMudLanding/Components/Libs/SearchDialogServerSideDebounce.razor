@@ -1,0 +1,244 @@
+@*
+Client send every single key stroke to the server while searching.
+The Server debounce the client request to make moderate database access.
+
+The server-debouncing algorithm implemented here is a stupid experiment.
+Other implementation (much more stable) is used by MudBlazor and other library is to rely on Timer.
+*@
+@attribute [StreamRendering]
+
+<dialog
+    @ref="_searchDialog"
+    class="modal modal-top scroll-0 [scrollbar-gutter:stable_both-edges]">
+    <div class="modal-box max-w-md mx-auto">
+        <label class="input input-primary input-lg w-full">
+            <LiSearch/>
+            <input
+                type="search"
+                required
+                placeholder="Search"
+                @ref="_searchInput"
+                value="@_currentSearchTerm"
+                @oninput="OnInputAsync"
+            />
+        </label>
+        <div class="max-h-79 overflow-y-scroll list">
+            @if (_foundItems is null)
+            {
+                <a class="list-row hover:bg-base-200 skeleton text-transparent">
+                    <div class="landing-text-small">Lorem</div>
+                    <div class="landing-text-c50 list-col-wrap text-xs skeleton text-transparent">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    </div>
+                </a>
+            }
+            else
+            {
+                @foreach (var item in _foundItems)
+                {
+                    <a href="@item.Url" class="list-row hover:bg-base-200">
+                        <div class="landing-text-small">@item.Title</div>
+                        <div class="landing-text-c50 list-col-wrap text-xs">
+                            @item.Description
+                        </div>
+                    </a>
+                }
+            }
+        </div>
+        <div class="opacity-20 text-xs mt-2 float-end">
+            Press ESC key or click outside to close
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button></button>
+    </form>
+</dialog>
+
+@implements IAsyncDisposable
+@inject IJSRuntime Js
+@inject SearchService SearchService;
+
+@code
+{
+    [Parameter] public int DebounceDelayMs { get; set; } = 500; // Default debounce delay
+    private string? _currentSearchTerm;
+    private IJSObjectReference? _jsModule;
+    private ElementReference? _searchDialog;
+    private ElementReference? _searchInput;
+    private FoundItem[]? _foundItems;
+
+    // private readonly ILogger Logger = NullLogger.Instance;
+    [Inject] public ILogger<SearchDialog> Logger { get; set; }
+
+    // CancellationTokenSource to manage cancelling previous search requests
+    private CancellationTokenSource? _debounceCancellationTokenSource;
+
+    private async Task OnInputAsync(ChangeEventArgs e)
+    {
+        var newSearchTerm = e.Value?.ToString() ?? string.Empty;
+        if (_currentSearchTerm == newSearchTerm) return;
+        await DebounceSearch(newSearchTerm);
+    }
+
+    private async Task DebounceSearch(string searchTerm)
+    {
+        Logger.LogInformation($"Debounced search triggered for: '{searchTerm}'");
+
+        _foundItems = null;
+        _currentSearchTerm = searchTerm;
+
+        // Cancel any pending debounced search requests
+        await CancelAndDisposeDebounceToken();
+        await CreateNewDebounceToken();
+
+        var currentToken = _debounceCancellationTokenSource.Token;
+        try
+        {
+            // Wait for the debounce delay
+            await Task.Delay(DebounceDelayMs, currentToken);
+
+            // If the token hasn't been cancelled (meaning no new input during the delay)
+            if (!currentToken.IsCancellationRequested)
+            {
+                // Perform the search
+                _foundItems = await SearchService.QuerySearchResultFromDatabase(_currentSearchTerm, currentToken); // Notify the parent component
+            }
+        }
+        catch (TaskCanceledException)
+        {
+            // This exception is expected when a new input comes in before the delay is over.
+            // No action needed here, just gracefully catch it.
+            Logger.LogInformation($"Debounce cancelled for: '{_currentSearchTerm}'");
+        }
+        finally
+        {
+            // Optionally, dispose the token source if it's no longer needed after a successful debounce
+            // or if it was cancelled. This helps GC to free this resources early.
+            if (_debounceCancellationTokenSource?.Token == currentToken)
+            {
+                await DisposeDebounceToken();
+            }
+        }
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        try
+        {
+            await DebounceSearch("");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogWarning(ex, "SearchDialog.OnInitializedAsync failed");
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        try
+        {
+            if (firstRender)
+            {
+                _jsModule = await Js.InvokeAsync<IJSObjectReference>("import",
+                    "./Components/Libs/SearchDialog.razor.js");
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogWarning(ex, "SearchDialog.OnAfterRenderAsync failed");
+        }
+    }
+
+    public async Task ShowModalAsync(string? elementToFocusId = null)
+    {
+        if (_jsModule is null) return;
+        if (_searchDialog is not null)
+        {
+            await _jsModule.InvokeVoidAsync("showModal", _searchDialog);
+        }
+
+        if (_searchInput is not null)
+        {
+            await _jsModule.InvokeVoidAsync("focus", _searchInput, 100);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_jsModule is not null)
+        {
+            try
+            {
+                await _jsModule.DisposeAsync();
+            }
+            catch (JSDisconnectedException ex)
+            {
+                Logger.LogError(ex, "Dispose");
+            }
+        }
+
+        await CancelAndDisposeDebounceToken();
+    }
+
+    private readonly SemaphoreSlim semaphoreSlim = new(1, 1);
+
+    private async ValueTask CreateNewDebounceToken()
+    {
+        await semaphoreSlim.WaitAsync();
+        try
+        {
+            _debounceCancellationTokenSource = new CancellationTokenSource();
+        }
+        finally
+        {
+            semaphoreSlim.Release();
+        }
+    }
+
+    private async ValueTask CancelAndDisposeDebounceToken()
+    {
+        if (_debounceCancellationTokenSource is not null)
+        {
+            await semaphoreSlim.WaitAsync();
+            try
+            {
+                if (_debounceCancellationTokenSource is not null)
+                {
+                    if (_debounceCancellationTokenSource.Token.CanBeCanceled)
+                    {
+                        await _debounceCancellationTokenSource.CancelAsync();
+                    }
+
+                    _debounceCancellationTokenSource.Dispose();
+                }
+            }
+            finally
+            {
+                semaphoreSlim.Release();
+            }
+        }
+    }
+
+    private async ValueTask DisposeDebounceToken()
+    {
+        if (_debounceCancellationTokenSource is not null)
+        {
+            await semaphoreSlim.WaitAsync();
+            try
+            {
+                if (_debounceCancellationTokenSource is not null)
+                {
+                    _debounceCancellationTokenSource.Dispose();
+                    _debounceCancellationTokenSource = null;
+                }
+            }
+            finally
+            {
+                semaphoreSlim.Release();
+            }
+        }
+    }
+}

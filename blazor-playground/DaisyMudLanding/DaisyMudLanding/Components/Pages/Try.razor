@@ -1,23 +1,18 @@
 @page "/try"
-@rendermode InteractiveServer
+@using DaisyMudLanding.Client.Components
+@rendermode InteractiveAuto
 
 <p>
-    <input @bind:event="oninput" @bind:get="inputValue" @bind:set="OnInputAsync"/>
+    <DebouncedInput class="input input-primary" placeholder="haha"
+                    @bind-Value="InputValue2"/>
 </p>
 
 <p>
-    <code>inputValue</code>: @inputValue
+    Input Value2: @InputValue2
 </p>
+
 
 @code {
-    private string? inputValue;
-
-    private async Task OnInputAsync(string value)
-    {
-        await Task.Delay(10);
-        var newValue = value ?? string.Empty;
-
-        inputValue = newValue.Length > 4 ? "Long!" : newValue;
-    }
+    private string InputValue2 = "4321";
 
 }

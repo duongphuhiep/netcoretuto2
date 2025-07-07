@@ -1,5 +1,6 @@
 ﻿@page "/counter"
-@rendermode InteractiveAuto
+@using DaisyMudLanding.Client.Components
+@rendermode InteractiveWebAssembly
 
 <PageTitle>Counter</PageTitle>
 
@@ -10,10 +11,27 @@
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
 @code {
-    private int currentCount = 0;
+    private int currentCount;
 
     private void IncrementCount()
     {
         currentCount++;
     }
+
+}
+
+
+<p>
+    <DebouncedInput class="input input-primary" placeholder="haha"
+                    @bind-Value="InputValue2"/>
+</p>
+
+<p>
+    Input Value2: @InputValue2
+</p>
+
+
+@code {
+    private string InputValue2 = "4321";
+
 }
