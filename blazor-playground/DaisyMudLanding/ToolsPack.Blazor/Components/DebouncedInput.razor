@@ -4,7 +4,7 @@
 
 <input @ref="InputElement" value="@Value" @oninput="OnInputChanged" @attributes="AdditionalEligibleAttributes"/>
 
-@inject ILogger<DebouncedServerInput> _logger;
+@inject ILogger<DebouncedInput> _logger;
 
 @code {
     public ElementReference? InputElement { get; private set; }

@@ -1,19 +1,20 @@
-<dialog
-    @ref="searchDialog"
+<Dialog
+    @ref="_dialog"
     class="modal modal-top scroll-0 [scrollbar-gutter:stable_both-edges]">
     <div class="modal-box max-w-md mx-auto">
         <label class="input input-primary input-lg w-full">
             <LiSearch/>
-            <DebouncedServerInput
+            <DebouncedInput
                 type="search"
                 required
                 placeholder="Search"
-                @ref="searchInput"
+                @ref="_searchInput"
                 ValueChanged="OnValueChanged"
+                autofocus
             />
         </label>
         <div class="max-h-79 overflow-y-scroll list">
-            @if (foundItems is null)
+            @if (_foundItems is null)
             {
                 //print a skeleton
                 <a class="list-row hover:bg-base-200 skeleton text-transparent">
@@ -25,7 +26,7 @@
             }
             else
             {
-                @foreach (var item in foundItems)
+                @foreach (var item in _foundItems)
                 {
                     <a href="@item.Url" class="list-row hover:bg-base-200">
                         <div class="landing-text-small">@item.Title</div>
@@ -43,56 +44,29 @@
     <form method="dialog" class="modal-backdrop">
         <button></button>
     </form>
-</dialog>
+</Dialog>
 
-@implements IAsyncDisposable
-@inject IJSRuntime JS
-@inject SearchService SearchService
+@inject SearchService _searchService
 
 @code
 {
-    private IJSObjectReference? jsModule;
-    private ElementReference? searchDialog;
-    private DebouncedServerInput? searchInput;
-    private FoundItem[]? foundItems;
+    private Dialog? _dialog;
+    private DebouncedInput? _searchInput;
+    private FoundItem[]? _foundItems;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        await base.OnAfterRenderAsync(firstRender);
-        if (firstRender)
-        {
-            jsModule = await JS.InvokeAsync<IJSObjectReference>("import",
-                $"./Components/Libs/{nameof(SearchDialog)}.razor.js");
-        }
+        _foundItems = await _searchService.QuerySearchResultFromDatabase("", default);
     }
 
-    public async Task ShowModalAsync(string? elementToFocusId = null)
+    public async Task ShowModalAsync()
     {
-        if (searchDialog is not null)
-        {
-            await jsModule.InvokeVoidAsync("showModal", searchDialog);
-        }
-
-        await jsModule.InvokeVoidAsync("focus", searchInput.InputElement, 500);
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        if (jsModule is not null)
-        {
-            try
-            {
-                await jsModule.DisposeAsync();
-            }
-            catch (JSDisconnectedException ex)
-            {
-                Console.Error.WriteLine(ex);
-            }
-        }
+        if (_dialog is null) return;
+        await _dialog.ShowModal(_searchInput?.InputElement);
     }
 
     private async Task OnValueChanged(string arg)
     {
-        foundItems = await SearchService.QuerySearchResultFromDatabase(arg, default);
+        _foundItems = await _searchService.QuerySearchResultFromDatabase(arg, default);
     }
 }

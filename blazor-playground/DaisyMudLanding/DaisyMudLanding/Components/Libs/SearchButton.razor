@@ -3,19 +3,15 @@
 <button class="tooltip tooltip-bottom" data-tip="Search" @onclick="showSearchDialog">
     <LiSearch/>
 </button>
-<SearchDialog @ref="searchDialog"></SearchDialog>
+<SearchDialog @ref="_searchDialog"></SearchDialog>
 
 @code {
-    private SearchDialog? searchDialog;
+    private SearchDialog? _searchDialog;
 
     private async Task showSearchDialog()
     {
-        if (searchDialog is null)
-        {
-            return;
-        }
-
-        await searchDialog.ShowModalAsync();
+        if (_searchDialog is null) return;
+        await _searchDialog.ShowModalAsync();
     }
 
 }
