@@ -4,20 +4,20 @@
     <div class="modal-box max-w-md mx-auto">
         <label class="input input-primary input-lg w-full">
             <LiSearch/>
-            <input
+            <DebouncedServerInput
                 type="search"
                 required
                 placeholder="Search"
                 @ref="searchInput"
-                value="@currentSearchTerm"
-                @oninput="OnInputAsync"
+                ValueChanged="OnValueChanged"
             />
         </label>
         <div class="max-h-79 overflow-y-scroll list">
             @if (foundItems is null)
             {
+                //print a skeleton
                 <a class="list-row hover:bg-base-200 skeleton text-transparent">
-                    <div class="landing-text-small">Lorem</div>
+                    <div class="landing-text-small skeleton">Lorem</div>
                     <div class="landing-text-c50 list-col-wrap text-xs skeleton text-transparent">
                         Lorem ipsum dolor sit amet consectetur adipisicing elit.
                     </div>
@@ -47,101 +47,14 @@
 
 @implements IAsyncDisposable
 @inject IJSRuntime JS
+@inject SearchService SearchService
 
 @code
 {
-    [Parameter] public int DebounceDelayMs { get; set; } = 500; // Default debounce delay
-    private string currentSearchTerm;
     private IJSObjectReference? jsModule;
     private ElementReference? searchDialog;
-    private ElementReference? searchInput;
-    private FoundItem[]? foundItems { get; set; }
-
-    // CancellationTokenSource to manage cancelling previous search requests
-    private CancellationTokenSource? _debounceCancellationTokenSource;
-
-    private async Task OnInputAsync(ChangeEventArgs e)
-    {
-        var newSearchTerm = e.Value?.ToString() ?? string.Empty;
-        if (currentSearchTerm == newSearchTerm) return;
-
-        foundItems = null;
-        currentSearchTerm = newSearchTerm;
-
-        // Cancel any pending debounced search requests
-        _debounceCancellationTokenSource?.Cancel();
-        _debounceCancellationTokenSource?.Dispose(); // Dispose the old token source
-        _debounceCancellationTokenSource = new CancellationTokenSource();
-
-        var currentToken = _debounceCancellationTokenSource.Token;
-        try
-        {
-            // Wait for the debounce delay
-            await Task.Delay(DebounceDelayMs, currentToken);
-
-            // If the token hasn't been cancelled (meaning no new input during the delay)
-            if (!currentToken.IsCancellationRequested)
-            {
-                // Perform the search
-                Console.WriteLine($"Debounced search triggered for: '{currentSearchTerm}' (C# only)");
-                foundItems = await PerformSearch(currentSearchTerm, currentToken); // Notify the parent component
-            }
-        }
-        catch (TaskCanceledException)
-        {
-            // This exception is expected when a new input comes in before the delay is over.
-            // No action needed here, just gracefully catch it.
-            Console.WriteLine($"Debounce cancelled for: '{currentSearchTerm}'");
-        }
-        finally
-        {
-            // Optionally, dispose the token source if it's no longer needed after a successful debounce
-            // or if it was cancelled. This helps manage resources.
-            if (_debounceCancellationTokenSource?.Token == currentToken)
-            {
-                _debounceCancellationTokenSource?.Dispose();
-                _debounceCancellationTokenSource = null;
-            }
-        }
-    }
-
-    private async ValueTask<FoundItem[]> PerformSearch(string searchTerm, CancellationToken cancellationToken)
-    {
-        await Task.Delay(2000, cancellationToken);
-        return
-        [
-            new FoundItem
-            {
-                Title = "From Sever " + Guid.NewGuid(),
-                Description = Guid.NewGuid().ToString(),
-                Url = "/"
-            },
-            new FoundItem
-            {
-                Title = "Installation",
-                Description = "Lorem ipsum dolor sit amet consectetur adipisicing edivt.",
-                Url = "/"
-            },
-            new FoundItem
-            {
-                Title = "Wireframes",
-                Description = "Amet deserunt nostrud do moldivt consequat proident ipsum magna incididunt.",
-                Url = "/"
-            },
-            new FoundItem
-            {
-                Title = "Table",
-                Description = "Sit sit excepteur aute culpa nulla incididunt fugiat dolore nisi et consectetur labore fugiat commodo.",
-                Url = "/"
-            },
-            new FoundItem
-            {
-                Title = "Grid",
-                Description = " Incididunt commodo pariatur excepteur consequat id. Lorem ipsum dolor sit amet consectetur adipisicing edivt. Esse molestias soluta quisquam nam labore odio tempore numquam repellat quod, sed, ipsa cum dolorum. Dicta optio simidivque obcaecati quaerat deleniti divbero?",
-                Url = "/"
-            }
-        ];
-    }
+    private DebouncedServerInput? searchInput;
+    private FoundItem[]? foundItems;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -149,7 +62,7 @@
         if (firstRender)
         {
             jsModule = await JS.InvokeAsync<IJSObjectReference>("import",
-                "./Components/Libs/SearchDialog.razor.js");
+                $"./Components/Libs/{nameof(SearchDialog)}.razor.js");
         }
     }
 
@@ -160,10 +73,7 @@
             await jsModule.InvokeVoidAsync("showModal", searchDialog);
         }
 
-        if (searchInput is not null)
-        {
-            await jsModule.InvokeVoidAsync("focus", searchInput, 100);
-        }
+        await jsModule.InvokeVoidAsync("focus", searchInput.InputElement, 500);
     }
 
     public async ValueTask DisposeAsync()
@@ -179,8 +89,10 @@
                 Console.Error.WriteLine(ex);
             }
         }
+    }
 
-        _debounceCancellationTokenSource?.Cancel();
-        _debounceCancellationTokenSource?.Dispose();
+    private async Task OnValueChanged(string arg)
+    {
+        foundItems = await SearchService.QuerySearchResultFromDatabase(arg, default);
     }
 }

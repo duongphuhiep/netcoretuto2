@@ -1,5 +1,4 @@
 ﻿@page "/counter"
-@using DaisyMudLanding.Client.Components
 @rendermode InteractiveWebAssembly
 
 <PageTitle>Counter</PageTitle>
@@ -17,21 +16,5 @@
     {
         currentCount++;
     }
-
-}
-
-
-<p>
-    <DebouncedServerInput class="input input-primary" placeholder="haha"
-                          @bind-Value="InputValue2"/>
-</p>
-
-<p>
-    Input Value2: @InputValue2
-</p>
-
-
-@code {
-    private string InputValue2 = "4321";
 
 }

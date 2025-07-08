@@ -6,9 +6,9 @@ export function showModal(element) {
         console.warn('unable to showModal on non-exist element');
         return;
     }
-    console.info('showModal begin');
+    //console.info('showModal begin');
     element.showModal();
-    console.info('showModal end');
+    //console.info('showModal end');
 }
 
 /**
@@ -20,14 +20,14 @@ export function focus(element, delay = undefined) {
         console.warn('unable to focus on non-exist element');
         return;
     }
-    console.info('focus begin');
+    //console.info('focus begin', element);
     if (!delay) {
         element.focus();
-        console.info('focus end');
+        //console.info('focus end');
         return;
     }
     setTimeout(() => {
         element.focus();
-        console.info('focus end (delayed)', delay, element);
+        //console.info('focus end (delayed)', delay);
     }, delay);
 }

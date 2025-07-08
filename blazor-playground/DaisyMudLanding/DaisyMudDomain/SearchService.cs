@@ -45,7 +45,7 @@ public class SearchService(ILogger<SearchService> _logger)
         return resu.Prepend(new FoundItem
         {
             Title = "From Sever " + Guid.NewGuid(),
-            Description = Guid.NewGuid().ToString(),
+            Description = searchTerm + " " + Guid.NewGuid(),
             Url = "/"
         }).ToArray();
     }

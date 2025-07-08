@@ -65,3 +65,8 @@ export function setBounceValue(inputElement, value) {
         inputElement.value = value;
     }
 }
+
+export function focus(element) {
+    console.log('focus', element);
+    element.focus();
+}

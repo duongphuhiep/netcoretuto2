@@ -1,16 +1,16 @@
+@rendermode InteractiveAuto
 @using System.Timers
 @implements IDisposable
 
-<input type="text" value="@Value" @oninput="OnInputChanged" @attributes="AdditionalEligibleAttributes"/>
+<input @ref="InputElement" value="@Value" @oninput="OnInputChanged" @attributes="AdditionalEligibleAttributes"/>
+
+@inject ILogger<DebouncedServerInput> _logger;
 
 @code {
+    public ElementReference? InputElement { get; private set; }
     private Timer? _timer;
     private string _internalValue = string.Empty;
     private string _value = string.Empty;
-
-    private IReadOnlyDictionary<string, object> AdditionalEligibleAttributes =>
-        AdditionalAttributes.Where(kvp => !kvp.Key.StartsWith("@"))
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
     [Parameter]
     public string Value
@@ -18,11 +18,10 @@
         get => _value;
         set
         {
-            if (_value != value)
-            {
-                _value = value;
-                _internalValue = value;
-            }
+            if (_value == value) return;
+            _value = value;
+            _internalValue = value;
+            StateHasChanged();
         }
     }
 
@@ -32,6 +31,10 @@
 
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private IReadOnlyDictionary<string, object>? AdditionalEligibleAttributes =>
+        AdditionalAttributes?.Where(kvp => !kvp.Key.StartsWith("@"))
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
     private void OnInputChanged(ChangeEventArgs e)
     {
@@ -51,9 +54,9 @@
         _timer.Start();
     }
 
-    private async void OnTimerElapsed(object? sender, ElapsedEventArgs e)
+    private void OnTimerElapsed(object? sender, ElapsedEventArgs e)
     {
-        await InvokeAsync(async () =>
+        InvokeAsync(async () =>
         {
             if (_value == _internalValue) return;
             // Only raise ValueChanged if the value actually changed
@@ -64,23 +67,20 @@
             }
             catch (Exception ex)
             {
-                // Log the exception if you have a logging framework
-                Console.WriteLine($"Error in ValueChanged callback: {ex}");
+                _logger.LogError(ex, $"{nameof(ValueChanged)} event handler crashed");
             }
 
             StateHasChanged();
-        });
+        }).FireAndForget(_logger);
     }
 
     public void Dispose()
     {
-        if (_timer != null)
-        {
-            _timer.Stop();
-            _timer.Elapsed -= OnTimerElapsed;
-            _timer.Dispose();
-            _timer = null;
-        }
+        if (_timer == null) return;
+        _timer.Stop();
+        _timer.Elapsed -= OnTimerElapsed;
+        _timer.Dispose();
+        _timer = null;
     }
 
 }
