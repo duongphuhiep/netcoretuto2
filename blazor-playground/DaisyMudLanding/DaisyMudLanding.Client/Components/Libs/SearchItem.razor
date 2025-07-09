@@ -1,0 +1,42 @@
+<a href="@FoundItem.Url" class="list-row hover:bg-base-200">
+    <div class="landing-text-small">@((MarkupString)HighlightedTitle)</div>
+    <div class="landing-text-c50 list-col-wrap text-xs">
+        @((MarkupString)HighlightedDescription)
+    </div>
+</a>
+
+@code {
+    [Parameter] public string Term { get; set; }
+    [Parameter] public FoundItem FoundItem { get; set; }
+
+    private string HighlightedDescription
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(FoundItem.Description) || string.IsNullOrEmpty(Term))
+            {
+                return FoundItem.Description ?? string.Empty;
+            }
+
+            // Simple case-insensitive replace
+            return FoundItem.Description.Replace(Term, $"<span class=\"text-accent\">{Term}</span>",
+                StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    private string HighlightedTitle
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(FoundItem.Title) || string.IsNullOrEmpty(Term))
+            {
+                return FoundItem.Title ?? string.Empty;
+            }
+
+            // Simple case-insensitive replace
+            return FoundItem.Title.Replace(Term, $"<span class=\"text-accent\">{Term}</span>",
+                StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+}

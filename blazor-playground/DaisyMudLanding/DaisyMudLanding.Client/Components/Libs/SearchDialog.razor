@@ -20,7 +20,7 @@
                 <a class="list-row hover:bg-base-200 skeleton text-transparent">
                     <div class="landing-text-small skeleton">Lorem</div>
                     <div class="landing-text-c50 list-col-wrap text-xs skeleton text-transparent">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Lorem ipsum dolor sit amet <span class="text-accent">consectetur</span> adipisicing elit.
                     </div>
                 </a>
             }
@@ -28,12 +28,7 @@
             {
                 @foreach (var item in _foundItems)
                 {
-                    <a href="@item.Url" class="list-row hover:bg-base-200">
-                        <div class="landing-text-small">@item.Title</div>
-                        <div class="landing-text-c50 list-col-wrap text-xs">
-                            @item.Description
-                        </div>
-                    </a>
+                    <SearchItem Term=@_searchTerm FoundItem=item></SearchItem>
                 }
             }
         </div>
@@ -53,6 +48,7 @@
     private Dialog? _dialog;
     private DebouncedInput? _searchInput;
     private FoundItem[]? _foundItems;
+    private string _searchTerm = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -67,6 +63,7 @@
 
     private async Task OnValueChanged(string arg)
     {
+        _searchTerm = arg;
         _foundItems = await _searchService.QuerySearchResultFromDatabase(arg, default);
     }
 }
