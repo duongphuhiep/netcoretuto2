@@ -1,7 +1,6 @@
 ---
 import DrawerContent from '../components/DrawerContent.astro';
-import NavBarLarge from '../components/NavBarLarge.astro';
-import NavBarSmall from '../components/NavBarSmall.astro';
+import NavBar from '../components/NavBar.astro';
 import Layout from './Layout.astro';
 ---
 
@@ -10,8 +9,7 @@ import Layout from './Layout.astro';
         <input id='drawer-toggler' type='checkbox' class='drawer-toggle' />
         <div class='drawer-content'>
             <!-- Navbar -->
-            <NavBarSmall />
-            <NavBarLarge />
+            <NavBar />
 
             <!-- Page content here -->
             <slot />
