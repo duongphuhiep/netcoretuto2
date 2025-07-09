@@ -40,6 +40,54 @@
         </Content>
     </ItemGroup>
 
+    <ItemGroup>
+        <_ContentIncludedByDefault Remove="Components\Layout\MainLayout.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\CardSample.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\CodeSample.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Community.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\DrawerContent.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\GetStarted.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\GlobalScale.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Links.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\MockupPhone.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\MockupTablet.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\NavBarLarge.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\NavBarSmall.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\NotificationBell.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\SampleAppScaled.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\SearchButton.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\SearchDialog.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\SearchDialogServerSideDebounce.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\ShowMore.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\SkewBand.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Splitter.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Sponsors.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Stats.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Svg\Astro.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Svg\Background.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Svg\BoxIcon.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Svg\CodesIcon.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Svg\ContributorColor.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Svg\Discord.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Svg\DiscordColor.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Svg\DownloadColor.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Svg\Gardnetab.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Svg\Github.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Svg\GithubColor.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Svg\GithubMark.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Svg\MudBlazor.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Svg\MudIcon.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Svg\NavigationCursor.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Svg\Stackoverflow.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Svg\Twitter.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Svg\WorldMapImage.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\TestimonialCard.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\Testimonials.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\ThemeSwitcher.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\UnifiedPlatform.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Libs\WorldMap.razor"/>
+    </ItemGroup>
+
     <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
         <Exec Command="bash &quot;../prebuild.sh&quot;"/>
     </Target>

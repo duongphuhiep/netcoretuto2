@@ -14,10 +14,55 @@
     </ItemGroup>
 
     <ItemGroup>
-        <AdditionalFiles Include="Components\DirSwitcher.razor"/>
+        <AdditionalFiles Include="Components\Layout\MainLayout.razor"/>
+        <AdditionalFiles Include="Components\Libs\CardSample.razor"/>
+        <AdditionalFiles Include="Components\Libs\CodeSample.razor"/>
+        <AdditionalFiles Include="Components\Libs\Community.razor"/>
+        <AdditionalFiles Include="Components\Libs\DrawerContent.razor"/>
+        <AdditionalFiles Include="Components\Libs\GetStarted.razor"/>
+        <AdditionalFiles Include="Components\Libs\GlobalScale.razor"/>
+        <AdditionalFiles Include="Components\Libs\Links.razor"/>
+        <AdditionalFiles Include="Components\Libs\MockupPhone.razor"/>
+        <AdditionalFiles Include="Components\Libs\MockupTablet.razor"/>
+        <AdditionalFiles Include="Components\Libs\NavBarLarge.razor"/>
+        <AdditionalFiles Include="Components\Libs\NavBarSmall.razor"/>
+        <AdditionalFiles Include="Components\Libs\NotificationBell.razor"/>
+        <AdditionalFiles Include="Components\Libs\SampleAppScaled.razor"/>
+        <AdditionalFiles Include="Components\Libs\SearchButton.razor"/>
+        <AdditionalFiles Include="Components\Libs\SearchDialog.razor"/>
+        <AdditionalFiles Include="Components\Libs\SearchDialogServerSideDebounce.razor"/>
+        <AdditionalFiles Include="Components\Libs\ShowMore.razor"/>
+        <AdditionalFiles Include="Components\Libs\SkewBand.razor"/>
+        <AdditionalFiles Include="Components\Libs\Splitter.razor"/>
+        <AdditionalFiles Include="Components\Libs\Sponsors.razor"/>
+        <AdditionalFiles Include="Components\Libs\Stats.razor"/>
+        <AdditionalFiles Include="Components\Libs\Svg\Astro.razor"/>
+        <AdditionalFiles Include="Components\Libs\Svg\Background.razor"/>
+        <AdditionalFiles Include="Components\Libs\Svg\BoxIcon.razor"/>
+        <AdditionalFiles Include="Components\Libs\Svg\CodesIcon.razor"/>
+        <AdditionalFiles Include="Components\Libs\Svg\ContributorColor.razor"/>
+        <AdditionalFiles Include="Components\Libs\Svg\Discord.razor"/>
+        <AdditionalFiles Include="Components\Libs\Svg\DiscordColor.razor"/>
+        <AdditionalFiles Include="Components\Libs\Svg\DownloadColor.razor"/>
+        <AdditionalFiles Include="Components\Libs\Svg\Gardnetab.razor"/>
+        <AdditionalFiles Include="Components\Libs\Svg\Github.razor"/>
+        <AdditionalFiles Include="Components\Libs\Svg\GithubColor.razor"/>
+        <AdditionalFiles Include="Components\Libs\Svg\GithubMark.razor"/>
+        <AdditionalFiles Include="Components\Libs\Svg\MudBlazor.razor"/>
+        <AdditionalFiles Include="Components\Libs\Svg\MudIcon.razor"/>
+        <AdditionalFiles Include="Components\Libs\Svg\NavigationCursor.razor"/>
+        <AdditionalFiles Include="Components\Libs\Svg\Stackoverflow.razor"/>
+        <AdditionalFiles Include="Components\Libs\Svg\Twitter.razor"/>
+        <AdditionalFiles Include="Components\Libs\Svg\WorldMapImage.razor"/>
+        <AdditionalFiles Include="Components\Libs\TestimonialCard.razor"/>
+        <AdditionalFiles Include="Components\Libs\Testimonials.razor"/>
+        <AdditionalFiles Include="Components\Libs\ThemeSwitcher.razor"/>
+        <AdditionalFiles Include="Components\Libs\UnifiedPlatform.razor"/>
+        <AdditionalFiles Include="Components\Libs\WorldMap.razor"/>
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\DaisyMudDomain\DaisyMudDomain.csproj"/>
         <ProjectReference Include="..\ToolsPack.Blazor\ToolsPack.Blazor.csproj"/>
     </ItemGroup>
 

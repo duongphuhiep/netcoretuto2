@@ -1,16 +1,19 @@
-﻿@using DaisyMudLanding.Components.Libs
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 
 <HeadContent>
     <script src="https://unpkg.com/@@mahozad/theme-switch"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet"
+    />
 </HeadContent>
 
 <div class="drawer">
-    <input id="drawer-toggler" type="checkbox" class="drawer-toggle" />
+    <input id="drawer-toggler" type="checkbox" class="drawer-toggle"/>
     <div class="drawer-content">
         <!-- Navbar -->
-        <NavBarSmall />
-        <NavBarLarge />
+        <NavBarSmall/>
+        <NavBarLarge/>
 
         <!-- Page content here -->
         @Body
@@ -20,7 +23,7 @@
             for="drawer-toggler"
             aria-label="close sidebar"
             class="drawer-overlay"></label>
-        <DrawerContent />
+        <DrawerContent/>
     </div>
 </div>
 

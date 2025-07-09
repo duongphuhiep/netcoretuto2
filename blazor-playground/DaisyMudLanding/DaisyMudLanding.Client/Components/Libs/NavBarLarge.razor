@@ -1,9 +1,8 @@
-@using DaisyMudLanding.Client.Components
-@using DaisyMudLanding.Components.Libs.Svg
-
 <nav class="navbar px-6 py-2 bg-base-200 w-full hidden lg:flex">
     <div class="navbar-start w-full">
-        <div class="w-[40px]"><MudBlazor /></div>
+        <div class="w-[40px]">
+            <MudBlazor/>
+        </div>
         <div class="tracking-[0.2rem] font-normal ms-3 text-2xl text-primary">
             MudBlazor
         </div>
@@ -27,26 +26,26 @@
     <div class="navbar-end">
         <div class="menu menu-horizontal gap-6">
             <div>
-                <SearchButton />
+                <SearchButton/>
             </div>
-            <NotificationBell />
+            <NotificationBell/>
             <div>
                 <a
                     class="tooltip tooltip-bottom"
                     data-tip="Switch Text direction">
-                    <DirSwitcher />
+                    <DirSwitcher/>
                 </a>
             </div>
             <div>
                 <a
                     class="tooltip tooltip-bottom"
                     data-tip="Switch Dark/Light theme">
-                    <ThemeSwitcher />
+                    <ThemeSwitcher/>
                 </a>
             </div>
             <div>
                 <a class="tooltip tooltip-bottom" data-tip="Github">
-                    <GithubLogo width="24px" class="fill-current" />
+                    <GithubLogo width="24px" class="fill-current"/>
                 </a>
             </div>
         </div>
