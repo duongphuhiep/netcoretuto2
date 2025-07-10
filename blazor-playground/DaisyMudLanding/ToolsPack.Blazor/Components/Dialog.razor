@@ -100,7 +100,7 @@
             return;
         }
 
-        await _jsModule.InvokeVoidAsync("togglePopover", DialogElement);
+        await _jsModule.InvokeVoidAsync("togglePopover", DialogElement, force);
     }
 
     public async ValueTask DisposeAsync()

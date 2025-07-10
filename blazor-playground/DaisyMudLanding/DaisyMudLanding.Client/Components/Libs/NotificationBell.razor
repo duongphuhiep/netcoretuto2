@@ -1,9 +1,9 @@
-@attribute [StreamRendering]
+@rendermode InteractiveAuto
 <div class="dropdown dropdown-start lg:dropdown-end">
     <div tabindex="0" role="button" class="indicator">
         <span class="indicator-item status status-info"></span>
         <a class="tooltip tooltip-bottom" data-tip="Notifications">
-            <LiBell />
+            <LiBell/>
         </a>
     </div>
 
@@ -13,69 +13,34 @@
                 Notifications
             </li>
 
-            @if (Notifications is null)
+            @if (_notifications is null)
             {
                 @for (var i = 0; i <= 1; i++)
                 {
-                    <a class="list-row hover:bg-base-200 hover:cursor-pointer">
-                        <div>
-                            <div class="skeleton">
-                                <span class="text-transparent">v8: Riding the Momentum of v7</span>
-                            </div>
-                            <div class="skeleton">
-                                <span class="text-transparent">The MudBlazor Team🔹Jan 19, 2025</span>
-                            </div>
-                        </div>
-                    </a>
+                    //Skeleton
+                    <NotificationItem/>
                 }
             }
             else
             {
-                @foreach (var notif in Notifications)
+                @foreach (var notif in _notifications)
                 {
-                    <a class="list-row hover:bg-base-200 hover:cursor-pointer">
-                        <div>
-                            <div>@notif.Title</div>
-                            <div class="landing-text-c50">
-                                <span>@notif.Author</span>🔹<span>@notif.Date</span>
-                            </div>
-                        </div>
-                    </a>
+                    <NotificationItem Notification="notif"/>
                 }
             }
         </div>
     </div>
 </div>
 
+@inject NotificationService _notificationService
+
 @code
 {
-    private Notification[]? Notifications { get; set; } = null;
+    private Notification[]? _notifications;
 
     protected override async Task OnInitializedAsync()
     {
-        // Simulate database access
-        //await Task.Delay(20000);
-
-        Notifications =
-        [
-            new Notification
-            {
-                Title = "v8: Riding the Momentum of v7",
-                Author = "The MudBlazor Team",
-                Date = "Jan 19, 2025"
-            },
-            new Notification
-            {
-                Title = "v7 Is Here",
-                Author = "The MudBlazor Team",
-                Date = "Jun 29, 2024"
-            },
-            new Notification
-            {
-                Title = "MudBlazor is here to stay",
-                Author = "Jonny Larsson",
-                Date = "Jan 13, 2022"
-            },
-        ];
+        await base.OnInitializedAsync();
+        _notifications = await _notificationService.GetNotifications(CancellationToken.None);
     }
 }

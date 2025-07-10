@@ -1,30 +1,45 @@
+@rendermode InteractiveAuto
 <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
     <div>
-        <div class="text-5xl text-primary my-4">16.6M</div>
+        <div class="text-5xl my-4 @_skeleton">@(_statsData?.Downloads ?? "???")</div>
         <div>
             <DownloadColor class="me-2 w-6 inline"/>
             Downloads
         </div>
     </div>
     <div>
-        <div class="text-5xl text-primary my-4">9.2k</div>
+        <div class="text-5xl my-4 @_skeleton">@(_statsData?.GithubStars ?? "???")</div>
         <div>
             <GithubColor class="me-2 w-6 inline"/>
             Github Stars
         </div>
     </div>
     <div>
-        <div class="text-5xl text-primary my-4">451</div>
+        <div class="text-5xl my-4 @_skeleton">@(_statsData?.Contributors ?? "???")</div>
         <div>
             <ContributorColor class="me-2 w-6 inline"/>
             Contributors
         </div>
     </div>
     <div>
-        <div class="text-5xl text-primary my-4">5.1k</div>
+        <div class="text-5xl my-4 @_skeleton">@(_statsData?.DiscordMembers ?? "???")</div>
         <div>
             <DiscordColor class="me-2 w-6 inline"/>
             Discord Members
         </div>
     </div>
 </div>
+
+@inject StatsService _statsService
+
+@code
+{
+    private StatsData? _statsData;
+    private string _skeleton => _statsData is null ? "skeleton text-transparent" : "text-primary";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _statsData = await _statsService.GetStats(CancellationToken.None);
+    }
+}

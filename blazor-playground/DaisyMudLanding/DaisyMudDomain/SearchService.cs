@@ -41,8 +41,10 @@ public class SearchService(ILogger<SearchService> _logger)
     public async ValueTask<FoundItem[]> QuerySearchResultFromDatabase(string searchTerm,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("QuerySearchResultFromDatabase '{searchTerm}'", searchTerm);
-        await Task.Delay(1000, cancellationToken);
+        _logger.LogInformation($"QuerySearchResultFromDatabase '{searchTerm}'");
+
+        //Simulate getting data from external sources
+        await Task.Delay(SimulationOptions.DelaySeconds * 1000, cancellationToken);
 
         if (string.IsNullOrEmpty(searchTerm))
             return EmptySearchResult;
@@ -63,10 +65,9 @@ public class SearchService(ILogger<SearchService> _logger)
         return resu.ToArray();
     }
 
-
     private string GenerateRandomTitle(string term)
     {
-        return faker.Random.Char('A', 'Z') + RandomTextContainingTerm(8, term, 0, 1, false);
+        return RandomTextContainingTerm(8, term, 0, 1, false);
     }
 
     private string GenerateRandomDescription(string term)
@@ -86,13 +87,13 @@ public class SearchService(ILogger<SearchService> _logger)
         }
 
         var partWordCount = wordCountPreference / occur;
-        if (partWordCount == 0) partWordCount = 1;
+        if (partWordCount == 0) partWordCount = 2;
 
         var sb = new StringBuilder();
         for (var i = 0; i < occur; i++)
         {
             if (ellipsis && faker.Random.Bool()) sb.Append("...");
-            var partString = faker.Lorem.Sentence(partWordCount - 1, 1);
+            var partString = faker.Lorem.Sentence(partWordCount - 2, 4);
             if (faker.Random.Bool())
             {
                 sb.Append(partString);

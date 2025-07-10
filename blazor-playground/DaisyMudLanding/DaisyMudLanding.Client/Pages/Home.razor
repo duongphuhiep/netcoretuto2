@@ -177,3 +177,14 @@
         Copyright © 2020-2025 MudBlazor
     </div>
 </section>
+
+@inject ILogger<Home> _Logger;
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _Logger.LogInformation("home page initialized");
+    }
+}

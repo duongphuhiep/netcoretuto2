@@ -58,8 +58,9 @@
     {
         InvokeAsync(async () =>
         {
-            if (_value == _internalValue) return;
             // Only raise ValueChanged if the value actually changed
+            if (_value == _internalValue) return;
+            
             _value = _internalValue;
             try
             {

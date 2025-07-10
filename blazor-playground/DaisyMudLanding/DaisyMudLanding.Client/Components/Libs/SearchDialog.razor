@@ -17,12 +17,7 @@
             @if (_foundItems is null)
             {
                 //print a skeleton
-                <a class="list-row hover:bg-base-200 skeleton text-transparent">
-                    <div class="landing-text-small skeleton">Lorem</div>
-                    <div class="landing-text-c50 list-col-wrap text-xs skeleton text-transparent">
-                        Lorem ipsum dolor sit amet <span>consectetur</span> adipisicing elit.
-                    </div>
-                </a>
+                <SearchItem Term=@_searchTerm FoundItem=@_sampleFoundItem IsSkeleton="true"></SearchItem>
             }
             else
             {
@@ -45,6 +40,13 @@
 
 @code
 {
+    private static readonly FoundItem _sampleFoundItem = new()
+    {
+        Url = "",
+        Title = "Lorem",
+        Description = "Lorem ipsum dolor sit amet <span>consectetur</span> adipisicing elit."
+    };
+
     private Dialog? _dialog;
     private DebouncedInput? _searchInput;
     private FoundItem[]? _foundItems;
@@ -52,7 +54,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _foundItems = await _searchService.QuerySearchResultFromDatabase("", default);
+        _foundItems = await _searchService.QuerySearchResultFromDatabase("", CancellationToken.None);
     }
 
     public async Task ShowModalAsync()
@@ -64,6 +66,6 @@
     private async Task OnValueChanged(string arg)
     {
         _searchTerm = arg;
-        _foundItems = await _searchService.QuerySearchResultFromDatabase(arg, default);
+        _foundItems = await _searchService.QuerySearchResultFromDatabase(arg, CancellationToken.None);
     }
 }

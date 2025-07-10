@@ -1,17 +1,43 @@
-<WorldMapImage class="w-[max(30rem,100%)] fill-base-content"/>
+@rendermode InteractiveAuto
 
-<script>
-    [
-        "United_States",
-        "United_Kingdom",
-        "Sweden",
-        "Germany",
-        "Egypt",
-        "Brazil",
-        "South_Africa",
-        "Russia",
-    ].forEach((country) => {
-        const c = document.getElementById(country);
-        c?.classList.add("fill-primary");
-    });
-</script>
+<WorldMapImage class="w-[max(30rem,100%)] fill-base-content" @attributes="@AdditionalAttributes"/>
+@implements IAsyncDisposable
+@inject ILogger<DebouncedClientInput> _logger
+@inject IJSRuntime _js
+@inject CountryListService _countryListService
+
+@code {
+    private IJSObjectReference? _jsModule;
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; } = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            _jsModule = await _js.InvokeAsync<IJSObjectReference>("import",
+                $"./Components/Libs/{nameof(WorldMap)}.razor.js");
+        }
+
+        var countryList = await _countryListService.GetCountryList(CancellationToken.None);
+        if (_jsModule is null) return;
+        await _jsModule.InvokeVoidAsync("HighlightCountry", countryList, "fill-primary");
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_jsModule is null)
+            return;
+        try
+        {
+            await _jsModule.DisposeAsync();
+        }
+        catch (JSDisconnectedException ex)
+        {
+            _logger.LogDebug(ex, "disconnected while disposing jsModule");
+        }
+    }
+
+}
