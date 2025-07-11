@@ -2,7 +2,7 @@
 @using System.Timers
 @implements IDisposable
 
-<input @ref="InputElement" value="@Value" @oninput="OnInputChanged" @attributes="AdditionalEligibleAttributes"/>
+<input @ref="InputElement" value="@Value" @oninput="OnInputChanged" @attributes="_additionalEligibleAttributes"/>
 
 @inject ILogger<DebouncedInput> _logger;
 
@@ -32,7 +32,7 @@
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
-    private IReadOnlyDictionary<string, object>? AdditionalEligibleAttributes =>
+    private IReadOnlyDictionary<string, object>? _additionalEligibleAttributes =>
         AdditionalAttributes?.Where(kvp => !kvp.Key.StartsWith("@"))
             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
@@ -60,7 +60,7 @@
         {
             // Only raise ValueChanged if the value actually changed
             if (_value == _internalValue) return;
-            
+
             _value = _internalValue;
             try
             {

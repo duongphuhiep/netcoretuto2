@@ -1,7 +1,7 @@
 @* wrapper around a HTML dialog element *@
 @rendermode InteractiveAuto
 
-<dialog @attributes="AdditionalEligibleAttributes" @ref="DialogElement">
+<dialog @attributes="_additionalEligibleAttributes" @ref="DialogElement">
     @ChildContent
 </dialog>
 
@@ -16,7 +16,7 @@
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> AdditionalAttributes { get; set; } = new();
 
-    private IReadOnlyDictionary<string, object> AdditionalEligibleAttributes =>
+    private IReadOnlyDictionary<string, object> _additionalEligibleAttributes =>
         AdditionalAttributes.Where(kvp => !kvp.Key.StartsWith("@"))
             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 

@@ -1,7 +1,7 @@
 @* this is a failed experiment, each time the component is re-rendered, we lost the cursor position (it jumps to the end of the text) *@
 @rendermode InteractiveAuto
 
-<input @attributes="AdditionalEligibleAttributes"
+<input @attributes="_additionalEligibleAttributes"
        @ref="InputElement"
        @bind:get="Value"
        @bind:set="SetValue"
@@ -18,7 +18,7 @@
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> AdditionalAttributes { get; set; } = new();
 
-    private IReadOnlyDictionary<string, object> AdditionalEligibleAttributes =>
+    private IReadOnlyDictionary<string, object> _additionalEligibleAttributes =>
         AdditionalAttributes.Where(kvp => !kvp.Key.StartsWith("@"))
             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
@@ -57,7 +57,7 @@
         }
     }
 
-    private async Task SetClientValue(string value)
+    private async Task SetClientValue(string _)
     {
         await InvokeAsync(async () =>
         {
