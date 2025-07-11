@@ -6,11 +6,11 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddMudDomainServices(this IServiceCollection services)
     {
-        services.AddSingleton<SearchService>();
-        services.AddSingleton<CountryListService>();
-        services.AddSingleton<StatsService>();
-        services.AddSingleton<TestimonialService>();
-        services.AddSingleton<NotificationService>();
+        services.AddScoped<SearchService>();
+        services.AddScoped<CountryListService>();
+        services.AddScoped<StatsService>();
+        services.AddScoped<TestimonialService>();
+        services.AddScoped<NotificationService>();
         return services;
     }
 }
