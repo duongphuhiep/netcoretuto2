@@ -1,45 +1,41 @@
 @rendermode InteractiveAuto
-<StateManager GetState="LoadDefaultSearchResult" StateKey="@(typeof(SearchDialog).FullName)"
-              @bind-Value="@_defaultSearchResult">
-    <Dialog
-        @ref="_dialog"
-        class="modal modal-top scroll-0 [scrollbar-gutter:stable_both-edges]">
-        <div class="modal-box max-w-md mx-auto">
-            <label class="input input-primary input-lg w-full">
-                <LiSearch/>
-                <DebouncedInput
-                    type="search"
-                    required
-                    placeholder="Search"
-                    @ref="_searchInput"
-                    ValueChanged="OnValueChanged"
-                    autofocus
-                />
-            </label>
-            <div class="max-h-79 overflow-y-scroll list">
-                @if ((_currentSearchResult ?? context) is null)
+<Dialog
+    @ref="_dialog"
+    class="modal modal-top scroll-0 [scrollbar-gutter:stable_both-edges]">
+    <div class="modal-box max-w-md mx-auto">
+        <label class="input input-primary input-lg w-full">
+            <LiSearch/>
+            <DebouncedInput
+                type="search"
+                required
+                placeholder="Search"
+                @ref="_searchInput"
+                ValueChanged="OnValueChanged"
+                autofocus
+            />
+        </label>
+        <div class="max-h-79 overflow-y-scroll list">
+            @if (_searchResult is null)
+            {
+                //print a skeleton
+                <SearchItem Term=@_searchTerm FoundItem=@_SampleFoundItem IsSkeleton="true"></SearchItem>
+            }
+            else
+            {
+                @foreach (var item in _searchResult)
                 {
-                    //print a skeleton
-                    <SearchItem Term=@_searchTerm FoundItem=@_SampleFoundItem IsSkeleton="true"></SearchItem>
+                    <SearchItem Term=@_searchTerm FoundItem=item></SearchItem>
                 }
-                else
-                {
-                    @foreach (var item in _currentSearchResult ?? context)
-                    {
-                        <SearchItem Term=@_searchTerm FoundItem=item></SearchItem>
-                    }
-                }
-            </div>
-            <div class="opacity-20 text-xs mt-2 float-end">
-                Press ESC key or click outside to close
-            </div>
+            }
         </div>
-        <form method="dialog" class="modal-backdrop">
-            <button></button>
-        </form>
-    </Dialog>
-
-</StateManager>
+        <div class="opacity-20 text-xs mt-2 float-end">
+            Press ESC key or click outside to close
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button></button>
+    </form>
+</Dialog>
 
 @inject SearchService _searchService
 
@@ -54,10 +50,11 @@
 
     private Dialog? _dialog;
     private DebouncedInput? _searchInput;
-    private FoundItem[]? _defaultSearchResult { get; set; }
-    private FoundItem[]? _currentSearchResult { get; set; }
+
+    [SupplyParameterFromPersistentComponentState]
+    private FoundItem[]? _searchResult { get; set; }
+
     private string _searchTerm { get; set; }
-    private FoundItem[]? searchResult => _currentSearchResult ?? _defaultSearchResult;
 
     public async Task ShowModalAsync()
     {
@@ -65,14 +62,15 @@
         await _dialog.ShowModal(_searchInput?.InputElement);
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _searchResult ??= await _searchService.QuerySearchResultFromDatabase("", CancellationToken.None);
+    }
+
     private async Task OnValueChanged(string arg)
     {
         _searchTerm = arg;
-        _currentSearchResult = await _searchService.QuerySearchResultFromDatabase(arg, CancellationToken.None);
-    }
-
-    public ValueTask<FoundItem[]> LoadDefaultSearchResult()
-    {
-        return _searchService.QuerySearchResultFromDatabase("", CancellationToken.None);
+        _searchResult = await _searchService.QuerySearchResultFromDatabase(arg, CancellationToken.None);
     }
 }

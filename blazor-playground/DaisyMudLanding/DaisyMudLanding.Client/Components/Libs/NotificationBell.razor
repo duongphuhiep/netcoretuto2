@@ -1,49 +1,47 @@
 @rendermode InteractiveAuto
-<StateManager GetState="GetState" StateKey="@(typeof(Notification[]).FullName)">
-    <div class="dropdown dropdown-start lg:dropdown-end">
-        <div tabindex="0" role="button" class="indicator">
-            <span class="indicator-item status status-info"></span>
-            <a class="tooltip tooltip-bottom" data-tip="Notifications">
-                <LiBell/>
-            </a>
-        </div>
+<div class="dropdown dropdown-start lg:dropdown-end">
+    <div tabindex="0" role="button" class="indicator">
+        <span class="indicator-item status status-info"></span>
+        <a class="tooltip tooltip-bottom" data-tip="Notifications">
+            <LiBell/>
+        </a>
+    </div>
 
-        <div tabindex="0" class="dropdown-content z-1">
-            <div class="list bg-base-100 rounded-box w-80 p-2 shadow-md inset-x-5">
-                <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">
-                    Notifications
-                </li>
+    <div tabindex="0" class="dropdown-content z-1">
+        <div class="list bg-base-100 rounded-box w-80 p-2 shadow-md inset-x-5">
+            <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">
+                Notifications
+            </li>
 
-                @if (context is null)
+            @if (_notifications is null)
+            {
+                @for (var i = 0; i <= 1; i++)
                 {
-                    @for (var i = 0; i <= 1; i++)
-                    {
-                        //Skeleton
-                        <NotificationItem/>
-                    }
+                    //Skeleton
+                    <NotificationItem/>
                 }
-                else
+            }
+            else
+            {
+                @foreach (var notif in _notifications)
                 {
-                    @foreach (var notif in context)
-                    {
-                        <NotificationItem Notification="notif"/>
-                    }
+                    <NotificationItem Notification="notif"/>
                 }
-            </div>
+            }
         </div>
     </div>
-</StateManager>
+</div>
+
 @inject NotificationService _notificationService
 
 @code
 {
+    [SupplyParameterFromPersistentComponentState]
+    private Notification[]? _notifications { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-    }
-
-    private ValueTask<Notification[]> GetState()
-    {
-        return _notificationService.GetNotifications(CancellationToken.None);
+        _notifications ??= await _notificationService.GetNotifications(CancellationToken.None);
     }
 }

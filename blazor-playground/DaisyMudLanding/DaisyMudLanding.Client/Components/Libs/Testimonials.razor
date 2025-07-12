@@ -1,3 +1,4 @@
+@rendermode InteractiveAuto
 <ShowMore>
     <div class="flex flex-row flex-wrap justify-around gap-5">
         @if (_testimonials is null)
@@ -21,11 +22,12 @@
 
 @code
 {
-    private Testimonial[]? _testimonials;
+    [SupplyParameterFromPersistentComponentState]
+    private Testimonial[]? _testimonials { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _testimonials = await _testimonialService.GetTestimonials(CancellationToken.None);
+        _testimonials ??= await _testimonialService.GetTestimonials(CancellationToken.None);
     }
 }

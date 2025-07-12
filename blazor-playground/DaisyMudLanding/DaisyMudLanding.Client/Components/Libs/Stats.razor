@@ -34,12 +34,14 @@
 
 @code
 {
-    private StatsData? _statsData;
+    [SupplyParameterFromPersistentComponentState]
+    private StatsData? _statsData { get; set; }
+
     private string _skeleton => _statsData is null ? "skeleton text-transparent" : "text-primary";
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _statsData = await _statsService.GetStats(CancellationToken.None);
+        _statsData ??= await _statsService.GetStats(CancellationToken.None);
     }
 }

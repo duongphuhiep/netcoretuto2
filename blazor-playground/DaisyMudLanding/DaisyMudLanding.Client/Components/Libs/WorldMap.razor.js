@@ -4,7 +4,7 @@
  * @param {string} className
  */
 export function HighlightCountry(countryList, className = "fill-primary") {
-    console.log('HighlightCountry', countryList, className);
+    if (!countryList || !className) return;
     countryList.forEach(country => {
         const c = document.getElementById(country);
         c?.classList.add(className);
