@@ -11,7 +11,7 @@
     private IJSObjectReference? _jsModule;
 
     [SupplyParameterFromPersistentComponentState]
-    private string[]? _countryList { get; set; }
+    public string[]? CountryList { get; set; }
 
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> AdditionalAttributes { get; set; } = new();
@@ -19,7 +19,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _countryList ??= await _countryListService.GetCountryList(CancellationToken.None);
+        CountryList ??= await _countryListService.GetCountryList(CancellationToken.None);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -31,8 +31,8 @@
                 $"./Components/Libs/{nameof(WorldMap)}.razor.js");
         }
 
-        if (_jsModule is null || _countryList is null) return;
-        await _jsModule.InvokeVoidAsync("HighlightCountry", _countryList, "fill-primary");
+        if (_jsModule is null || CountryList is null) return;
+        await _jsModule.InvokeVoidAsync("HighlightCountry", CountryList, "fill-primary");
     }
 
     public async ValueTask DisposeAsync()

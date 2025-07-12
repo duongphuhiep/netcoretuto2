@@ -13,7 +13,7 @@
                 Notifications
             </li>
 
-            @if (_notifications is null)
+            @if (Notifications is null)
             {
                 @for (var i = 0; i <= 1; i++)
                 {
@@ -23,7 +23,7 @@
             }
             else
             {
-                @foreach (var notif in _notifications)
+                @foreach (var notif in Notifications)
                 {
                     <NotificationItem Notification="notif"/>
                 }
@@ -37,11 +37,11 @@
 @code
 {
     [SupplyParameterFromPersistentComponentState]
-    private Notification[]? _notifications { get; set; }
+    public Notification[]? Notifications { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _notifications ??= await _notificationService.GetNotifications(CancellationToken.None);
+        Notifications ??= await _notificationService.GetNotifications(CancellationToken.None);
     }
 }

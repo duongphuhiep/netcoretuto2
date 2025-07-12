@@ -1,7 +1,7 @@
 @rendermode InteractiveAuto
 <ShowMore>
     <div class="flex flex-row flex-wrap justify-around gap-5">
-        @if (_testimonials is null)
+        @if (TestimonialsList is null)
         {
             @for (var i = 0; i < 4; i++)
             {
@@ -10,7 +10,7 @@
         }
         else
         {
-            @foreach (var t in _testimonials)
+            @foreach (var t in TestimonialsList)
             {
                 <TestimonialCard Testimonial="t"/>
             }
@@ -23,11 +23,11 @@
 @code
 {
     [SupplyParameterFromPersistentComponentState]
-    private Testimonial[]? _testimonials { get; set; }
+    public Testimonial[]? TestimonialsList { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _testimonials ??= await _testimonialService.GetTestimonials(CancellationToken.None);
+        TestimonialsList ??= await _testimonialService.GetTestimonials(CancellationToken.None);
     }
 }

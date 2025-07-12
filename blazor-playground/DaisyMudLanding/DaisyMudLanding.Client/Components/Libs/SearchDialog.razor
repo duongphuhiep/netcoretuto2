@@ -15,14 +15,14 @@
             />
         </label>
         <div class="max-h-79 overflow-y-scroll list">
-            @if (_searchResult is null)
+            @if (SearchResult is null)
             {
                 //print a skeleton
                 <SearchItem Term=@_searchTerm FoundItem=@_SampleFoundItem IsSkeleton="true"></SearchItem>
             }
             else
             {
-                @foreach (var item in _searchResult)
+                @foreach (var item in SearchResult)
                 {
                     <SearchItem Term=@_searchTerm FoundItem=item></SearchItem>
                 }
@@ -52,9 +52,9 @@
     private DebouncedInput? _searchInput;
 
     [SupplyParameterFromPersistentComponentState]
-    private FoundItem[]? _searchResult { get; set; }
+    public FoundItem[]? SearchResult { get; set; }
 
-    private string _searchTerm { get; set; }
+    private string? _searchTerm { get; set; }
 
     public async Task ShowModalAsync()
     {
@@ -65,12 +65,12 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _searchResult ??= await _searchService.QuerySearchResultFromDatabase("", CancellationToken.None);
+        SearchResult ??= await _searchService.QuerySearchResultFromDatabase("", CancellationToken.None);
     }
 
     private async Task OnValueChanged(string arg)
     {
         _searchTerm = arg;
-        _searchResult = await _searchService.QuerySearchResultFromDatabase(arg, CancellationToken.None);
+        SearchResult = await _searchService.QuerySearchResultFromDatabase(arg, CancellationToken.None);
     }
 }

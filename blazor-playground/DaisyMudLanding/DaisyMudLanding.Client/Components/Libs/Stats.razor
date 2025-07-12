@@ -1,28 +1,28 @@
 @rendermode InteractiveAuto
 <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
     <div>
-        <div class="text-5xl my-4 @_skeleton">@(_statsData?.Downloads ?? "???")</div>
+        <div class="text-5xl my-4 @_skeleton">@(StatsData?.Downloads ?? "???")</div>
         <div>
             <DownloadColor class="me-2 w-6 inline"/>
             Downloads
         </div>
     </div>
     <div>
-        <div class="text-5xl my-4 @_skeleton">@(_statsData?.GithubStars ?? "???")</div>
+        <div class="text-5xl my-4 @_skeleton">@(StatsData?.GithubStars ?? "???")</div>
         <div>
             <GithubColor class="me-2 w-6 inline"/>
             Github Stars
         </div>
     </div>
     <div>
-        <div class="text-5xl my-4 @_skeleton">@(_statsData?.Contributors ?? "???")</div>
+        <div class="text-5xl my-4 @_skeleton">@(StatsData?.Contributors ?? "???")</div>
         <div>
             <ContributorColor class="me-2 w-6 inline"/>
             Contributors
         </div>
     </div>
     <div>
-        <div class="text-5xl my-4 @_skeleton">@(_statsData?.DiscordMembers ?? "???")</div>
+        <div class="text-5xl my-4 @_skeleton">@(StatsData?.DiscordMembers ?? "???")</div>
         <div>
             <DiscordColor class="me-2 w-6 inline"/>
             Discord Members
@@ -35,13 +35,13 @@
 @code
 {
     [SupplyParameterFromPersistentComponentState]
-    private StatsData? _statsData { get; set; }
+    public StatsData? StatsData { get; set; }
 
-    private string _skeleton => _statsData is null ? "skeleton text-transparent" : "text-primary";
+    private string _skeleton => StatsData is null ? "skeleton text-transparent" : "text-primary";
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _statsData ??= await _statsService.GetStats(CancellationToken.None);
+        StatsData ??= await _statsService.GetStats(CancellationToken.None);
     }
 }
