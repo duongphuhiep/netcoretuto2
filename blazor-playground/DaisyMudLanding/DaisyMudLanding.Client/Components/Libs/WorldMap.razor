@@ -6,11 +6,13 @@
 @inject ILogger<DebouncedClientInput> _logger
 @inject IJSRuntime _js
 @inject CountryListService _countryListService
+@inject PersistentComponentState _applicationState
 
 @code {
     private IJSObjectReference? _jsModule;
 
-    [SupplyParameterFromPersistentComponentState]
+    private PersistingComponentStateSubscription _persistingSubscription;
+    private const string _StateKey = nameof(CountryList);
     public string[]? CountryList { get; set; }
 
     [Parameter(CaptureUnmatchedValues = true)]
@@ -19,7 +21,17 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        CountryList ??= await _countryListService.GetCountryList(CancellationToken.None);
+        if (!_applicationState.TryTakeFromJson<string?[]>(_StateKey, out var restored))
+        {
+            CountryList = await _countryListService.GetCountryList(CancellationToken.None);
+        }
+        else
+        {
+            CountryList = restored!;
+        }
+
+        // Call at the end to avoid a potential race condition at app shutdown
+        _persistingSubscription = _applicationState.RegisterOnPersisting(async () => { _applicationState.PersistAsJson(_StateKey, CountryList); });
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -37,6 +49,7 @@
 
     public async ValueTask DisposeAsync()
     {
+        _persistingSubscription.Dispose();
         if (_jsModule is null)
             return;
         try

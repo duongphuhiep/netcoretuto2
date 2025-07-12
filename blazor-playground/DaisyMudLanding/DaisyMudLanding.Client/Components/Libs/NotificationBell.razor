@@ -33,15 +33,47 @@
 </div>
 
 @inject NotificationService _notificationService
+@* @inject PersistentComponentState _applicationState *@
+@* @implements IDisposable *@
+@inject ILogger<NotificationBell> _logger
 
 @code
 {
-    [SupplyParameterFromPersistentComponentState]
+    // private PersistingComponentStateSubscription _persistingSubscription;
+    // private const string _StateKey = nameof(Notifications);
     public Notification[]? Notifications { get; set; }
+
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Notifications ??= await _notificationService.GetNotifications(CancellationToken.None);
+
+        Notifications = await _notificationService.GetNotifications(CancellationToken.None);
+        // if (!_applicationState.TryTakeFromJson<Notification?[]>(_StateKey, out var restored))
+        // {
+        //     Notifications = await _notificationService.GetNotifications(CancellationToken.None);
+        // }
+        // else
+        // {
+        //     Notifications = restored!;
+        // }
+        //
+        // // Call at the end to avoid a potential race condition at app shutdown
+        // _persistingSubscription = _applicationState.RegisterOnPersisting(async () =>
+        // {
+        //     try
+        //     {
+        //         _applicationState.PersistAsJson(_StateKey, Notifications);
+        //     }
+        //     catch (ArgumentException)
+        //     {
+        //         _logger.LogInformation($"There is already a persisted object under the same key {_StateKey}");
+        //     }
+        // });
     }
+
+    // public void Dispose()
+    // {
+    //     _persistingSubscription.Dispose();
+    // }
 }

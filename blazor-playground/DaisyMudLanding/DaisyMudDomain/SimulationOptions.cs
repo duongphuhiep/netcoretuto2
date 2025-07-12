@@ -2,5 +2,5 @@ namespace DaisyMudDomain;
 
 public static class SimulationOptions
 {
-    public const int DelaySeconds = 2;
+    public const int DelaySeconds = 1;
 }

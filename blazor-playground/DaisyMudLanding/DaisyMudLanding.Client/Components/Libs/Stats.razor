@@ -31,10 +31,13 @@
 </div>
 
 @inject StatsService _statsService
+@inject PersistentComponentState _applicationState
+@implements IDisposable
 
 @code
 {
-    [SupplyParameterFromPersistentComponentState]
+    private PersistingComponentStateSubscription _persistingSubscription;
+    private const string _StateKey = nameof(StatsData);
     public StatsData? StatsData { get; set; }
 
     private string _skeleton => StatsData is null ? "skeleton text-transparent" : "text-primary";
@@ -42,6 +45,21 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        StatsData ??= await _statsService.GetStats(CancellationToken.None);
+        if (!_applicationState.TryTakeFromJson<StatsData?>(_StateKey, out var restored))
+        {
+            StatsData = await _statsService.GetStats(CancellationToken.None);
+        }
+        else
+        {
+            StatsData = restored!;
+        }
+
+        // Call at the end to avoid a potential race condition at app shutdown
+        _persistingSubscription = _applicationState.RegisterOnPersisting(async () => { _applicationState.PersistAsJson(_StateKey, StatsData); });
+    }
+
+    public void Dispose()
+    {
+        _persistingSubscription.Dispose();
     }
 }

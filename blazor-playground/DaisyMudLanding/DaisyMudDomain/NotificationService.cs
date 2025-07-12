@@ -9,15 +9,17 @@ public class NotificationService(ILogger<NotificationService> _logger)
 
     public async ValueTask<Notification[]> GetNotifications(CancellationToken cancellationToken)
     {
-        if (_cachedNotifications is not null) return _cachedNotifications;
-        await _semaphore.WaitAsync(cancellationToken);
-        try
+        if (_cachedNotifications is null)
         {
-            _cachedNotifications ??= await GetNotificationsInDatabase(cancellationToken);
-        }
-        finally
-        {
-            _semaphore.Release();
+            await _semaphore.WaitAsync(cancellationToken);
+            try
+            {
+                _cachedNotifications ??= await GetNotificationsInDatabase(cancellationToken);
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
         }
 
         return _cachedNotifications;

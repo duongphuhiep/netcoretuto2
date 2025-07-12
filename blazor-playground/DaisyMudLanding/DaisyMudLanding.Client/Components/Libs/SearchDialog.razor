@@ -38,6 +38,8 @@
 </Dialog>
 
 @inject SearchService _searchService
+@inject PersistentComponentState _applicationState
+@implements IDisposable
 
 @code
 {
@@ -50,9 +52,9 @@
 
     private Dialog? _dialog;
     private DebouncedInput? _searchInput;
-
-    [SupplyParameterFromPersistentComponentState]
+    private PersistingComponentStateSubscription _persistingSubscription;
     public FoundItem[]? SearchResult { get; set; }
+    private const string _StateKey = nameof(SearchResult);
 
     private string? _searchTerm { get; set; }
 
@@ -65,12 +67,27 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        SearchResult ??= await _searchService.QuerySearchResultFromDatabase("", CancellationToken.None);
+        if (!_applicationState.TryTakeFromJson<FoundItem[]?>(_StateKey, out var restored))
+        {
+            SearchResult = await _searchService.QuerySearchResultFromDatabase("", CancellationToken.None);
+        }
+        else
+        {
+            SearchResult = restored!;
+        }
+
+        // Call at the end to avoid a potential race condition at app shutdown
+        _persistingSubscription = _applicationState.RegisterOnPersisting(async () => { _applicationState.PersistAsJson(_StateKey, SearchResult); });
     }
 
     private async Task OnValueChanged(string arg)
     {
         _searchTerm = arg;
         SearchResult = await _searchService.QuerySearchResultFromDatabase(arg, CancellationToken.None);
+    }
+
+    public void Dispose()
+    {
+        _persistingSubscription.Dispose();
     }
 }

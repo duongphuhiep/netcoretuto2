@@ -19,15 +19,33 @@
 </ShowMore>
 
 @inject TestimonialService _testimonialService
+@inject PersistentComponentState _applicationState
+@implements IDisposable
 
 @code
 {
-    [SupplyParameterFromPersistentComponentState]
+    private PersistingComponentStateSubscription _persistingSubscription;
+    private const string _StateKey = nameof(Testimonials);
     public Testimonial[]? TestimonialsList { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        TestimonialsList ??= await _testimonialService.GetTestimonials(CancellationToken.None);
+        if (!_applicationState.TryTakeFromJson<Testimonial?[]>(_StateKey, out var restored))
+        {
+            TestimonialsList = await _testimonialService.GetTestimonials(CancellationToken.None);
+        }
+        else
+        {
+            TestimonialsList = restored!;
+        }
+
+        // Call at the end to avoid a potential race condition at app shutdown
+        _persistingSubscription = _applicationState.RegisterOnPersisting(async () => { _applicationState.PersistAsJson(_StateKey, TestimonialsList); });
+    }
+
+    public void Dispose()
+    {
+        _persistingSubscription.Dispose();
     }
 }

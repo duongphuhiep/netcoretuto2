@@ -5,5 +5,4 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.Services.AddLogging();
 builder.Services.AddLucideIcons();
 builder.Services.AddMudDomainServices();
-builder.Services.AddSupplyValueFromPersistentComponentStateProvider();
 await builder.Build().RunAsync();

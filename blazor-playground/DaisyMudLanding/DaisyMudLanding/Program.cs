@@ -11,7 +11,6 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 builder.Services.AddLucideIcons();
 builder.Services.AddMudDomainServices();
-builder.Services.AddSupplyValueFromPersistentComponentStateProvider();
 
 builder.Logging.AddOpenTelemetry(opt => opt.AddOtlpExporter());
 builder.Logging.AddConsole();
